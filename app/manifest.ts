@@ -4,11 +4,10 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'Orders NG',
     short_name: 'Orders NG',
-    description: 'Gestionale eventi e food cost Officina22',
+    description: 'Gestionale Officina22',
     start_url: '/',
     display: 'standalone',
-    background_color: '#f5f4f1',
+    background_color: '#f3f2ef',
     theme_color: '#171717',
-    icons: [],
   }
 }
