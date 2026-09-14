@@ -1,1 +1,0 @@
-.recipeBasics > label:nth-child(3){display:none!important}.recipeCardTop p{display:none!important}.recipeMetrics > div:nth-child(2){display:none!important}.costRows > div:nth-child(2){display:none!important}.recipeBasics{grid-template-columns:1fr 1fr}.recipeBasics > label.span2{grid-column:span 2}.recipeMetrics{grid-template-columns:repeat(2,1fr)!important}
