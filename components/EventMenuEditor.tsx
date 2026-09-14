@@ -1,0 +1,115 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { Plus, Trash2 } from 'lucide-react'
+import { EventMenuLine, MenuRecipeOption, loadEventMenuByNumber, saveEventMenuByNumber } from '@/lib/supabase'
+
+const courseTypes = [
+  ['starter','Antipasto'],
+  ['first','Primo'],
+  ['main','Secondo'],
+  ['side','Contorno'],
+  ['dessert','Dessert'],
+  ['other','Altro'],
+]
+
+export function EventMenuEditor({ eventNumber }: { eventNumber: number }) {
+  const [menuId, setMenuId] = useState<string | null>(null)
+  const [recipes, setRecipes] = useState<MenuRecipeOption[]>([])
+  const [lines, setLines] = useState<EventMenuLine[]>([])
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [message, setMessage] = useState('')
+
+  useEffect(() => {
+    let cancelled = false
+    async function load() {
+      setLoading(true)
+      setMessage('')
+      const result = await loadEventMenuByNumber(eventNumber)
+      if (cancelled) return
+      setMenuId(result.menuId)
+      setRecipes(result.recipes)
+      setLines(result.lines)
+      if (result.error) setMessage(result.error)
+      setLoading(false)
+    }
+    load()
+    return () => { cancelled = true }
+  }, [eventNumber])
+
+  function addLine() {
+    setLines(v => [...v, { recipe_id:'', course_type:'starter' }])
+  }
+
+  function updateLine(index:number, patch:Partial<EventMenuLine>) {
+    setLines(v => v.map((line,i) => i===index ? {...line,...patch} : line))
+  }
+
+  function removeLine(index:number) {
+    setLines(v => v.filter((_,i) => i!==index))
+  }
+
+  function moveLine(index:number, direction:-1|1) {
+    setLines(v => {
+      const target = index + direction
+      if (target < 0 || target >= v.length) return v
+      const copy = [...v]
+      ;[copy[index], copy[target]] = [copy[target], copy[index]]
+      return copy
+    })
+  }
+
+  async function save() {
+    if (lines.some(l => !l.recipe_id)) {
+      setMessage('Seleziona una ricetta per ogni portata.')
+      return
+    }
+    setSaving(true)
+    setMessage('')
+    const result = await saveEventMenuByNumber(eventNumber, menuId, lines, recipes)
+    setSaving(false)
+    if (result.error) {
+      setMessage(result.error)
+      return
+    }
+    setMenuId(result.menuId)
+    setMessage('Menu salvato.')
+  }
+
+  return (
+    <section className="compositionBox" style={{margin:'18px 24px 24px'}}>
+      <div className="compositionHead">
+        <div><span className="eyebrow">MENU EVENTO</span><h3>Portate</h3></div>
+        <button type="button" className="secondary" onClick={addLine}><Plus size={16}/> Aggiungi portata</button>
+      </div>
+
+      {loading ? <div className="empty">Caricamento menu…</div> : lines.length===0 ? <div className="empty">Nessuna portata. Aggiungi la prima ricetta al menu.</div> : (
+        <div style={{display:'grid', gap:10}}>
+          {lines.map((line,idx) => (
+            <div key={idx} style={{display:'grid', gridTemplateColumns:'150px minmax(220px,1fr) auto', gap:10, alignItems:'center'}}>
+              <select value={line.course_type} onChange={e=>updateLine(idx,{course_type:e.target.value})}>
+                {courseTypes.map(([value,label]) => <option key={value} value={value}>{label}</option>)}
+              </select>
+              <select value={line.recipe_id} onChange={e=>updateLine(idx,{recipe_id:e.target.value})}>
+                <option value="">Seleziona ricetta</option>
+                {recipes.map(r => <option key={r.id} value={r.id}>{r.name}{r.category?` — ${r.category}`:''}</option>)}
+              </select>
+              <div style={{display:'flex', gap:4}}>
+                <button type="button" className="ghost" onClick={()=>moveLine(idx,-1)} disabled={idx===0}>↑</button>
+                <button type="button" className="ghost" onClick={()=>moveLine(idx,1)} disabled={idx===lines.length-1}>↓</button>
+                <button type="button" className="deleteLine" onClick={()=>removeLine(idx)}><Trash2 size={16}/></button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', gap:12, marginTop:14}}>
+        <small className="fieldHint">L'ordine dall'alto verso il basso è l'ordine di servizio.</small>
+        <button type="button" className="secondary" onClick={save} disabled={saving || loading}>{saving?'Salvataggio…':'Salva menu'}</button>
+      </div>
+      {message && <div className={message==='Menu salvato.'?'fieldHint':'errorBox'} style={{marginTop:10}}>{message}</div>}
+    </section>
+  )
+}
