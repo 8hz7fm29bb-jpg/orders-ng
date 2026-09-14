@@ -1,12 +1,13 @@
 import './globals.css'
 import './recipe-categories.css'
+import './brand.css'
 import type { Metadata, Viewport } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Orders NG',
+  title: 'Orders NextGen',
   description: 'Gestione eventi, ricette e food cost Officina22',
   manifest: '/manifest.webmanifest',
-  appleWebApp: { capable: true, title: 'Orders NG', statusBarStyle: 'default' },
+  appleWebApp: { capable: true, title: '22 Orders', statusBarStyle: 'default' },
 }
 
 export const viewport: Viewport = {
