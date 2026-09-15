@@ -1,0 +1,23 @@
+name: Apply client upgrade
+on:
+  push:
+    branches: [feature/clienti-id-numerici]
+    paths:
+      - 'scripts/apply-client-upgrade.py'
+      - '.github/workflows/apply-client-upgrade.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python scripts/apply-client-upgrade.py
+      - name: Commit generated frontend changes
+        run: |
+          git config user.name "orders-ng-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add app/page.tsx
+          git diff --cached --quiet && exit 0
+          git commit -m "Add client editing deletion and numeric IDs to UI"
+          git push
