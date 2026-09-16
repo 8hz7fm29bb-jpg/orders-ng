@@ -2,6 +2,7 @@ import './globals.css'
 import './recipe-categories.css'
 import './brand.css'
 import './ingredient-unit.css'
+import './event-form.css'
 import type { Metadata, Viewport } from 'next'
 
 export const metadata: Metadata = {
