@@ -1,1 +1,3 @@
-.formGrid > label:nth-child(3) > select[required]{height:44px;min-height:44px;max-width:230px;width:100%;font-size:16px;font-weight:700}
+.formGrid > label:nth-child(2) > input,
+.formGrid > label:nth-child(3) > select[required]{height:44px;min-height:44px;border-radius:10px;padding:0 12px}
+.formGrid > label:nth-child(3) > select[required]{max-width:230px;width:100%;font-size:16px;font-weight:700}
