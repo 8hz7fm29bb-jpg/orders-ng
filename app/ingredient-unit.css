@@ -1,3 +1,8 @@
+.formGrid > label:nth-child(2){grid-column:1/-1}
+.formGrid > label:nth-child(3){grid-column:2;grid-row:3}
+.formGrid > label:nth-child(4){grid-column:1;grid-row:3}
 .formGrid > label:nth-child(2) > input,
-.formGrid > label:nth-child(3) > select[required]{box-sizing:border-box;height:44px;min-height:44px;max-height:44px;border:1px solid #dcd9d2;border-radius:10px;padding:0 12px;font-size:inherit;font-weight:inherit;line-height:42px;background:#fff;color:var(--ink)}
-.formGrid > label:nth-child(3) > select[required]{max-width:230px;width:100%;line-height:normal}
+.formGrid > label:nth-child(3) > select[required],
+.formGrid > label:nth-child(4) > input[type="number"]{box-sizing:border-box;height:44px;min-height:44px;max-height:44px;border:1px solid #dcd9d2;border-radius:10px;padding:0 12px;font-size:inherit;font-weight:inherit;background:#fff;color:var(--ink)}
+.formGrid > label:nth-child(3) > select[required]{width:100%;line-height:normal}
+@media(max-width:640px){.formGrid > label:nth-child(2),.formGrid > label:nth-child(3),.formGrid > label:nth-child(4){grid-column:1/-1;grid-row:auto}}
