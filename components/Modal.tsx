@@ -32,8 +32,8 @@ export function Modal({ title, children, onClose, wide = false }: { title: strin
         {children}
         {eventNumber !== null && <EventMenuEditor eventNumber={eventNumber} />}
         {eventNumber !== null && (
-          <div className="formActions">
-            <button type="button" className="ghost" onClick={deleteEvent}><Trash2 size={16} /> Elimina evento</button>
+          <div className="eventDeleteArea">
+            <button type="button" className="eventDeleteButton" onClick={deleteEvent}><Trash2 size={17} /> Elimina evento</button>
           </div>
         )}
       </div>
