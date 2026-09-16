@@ -1,50 +1,8 @@
-name: Apply client form redesign
-
+name: Client form redesign helper (inactive)
 on:
-  push:
-    branches:
-      - feature/scheda-cliente-tipo
-
-permissions:
-  contents: write
-
+  workflow_dispatch:
 jobs:
-  apply:
-    if: github.actor != 'github-actions[bot]'
+  noop:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: feature/scheda-cliente-tipo
-      - name: Apply changes
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-
-          p = Path('app/page.tsx')
-          s = p.read_text()
-          old_save = "setSaving(true);const res=client?await supabase.from('clients').update(f).eq('id',client.id):await supabase.from('clients').insert(f);setSaving(false)"
-          new_save = "setSaving(true);const payload=f.customer_type==='azienda'?{...f,first_name:null,last_name:null}:{...f,company_name:null};const res=client?await supabase.from('clients').update(payload).eq('id',client.id):await supabase.from('clients').insert(payload);setSaving(false)"
-          old_fields = "<label className=\"span2\">Tipo<select value={f.customer_type} onChange={e=>setF({...f,customer_type:e.target.value})}><option value=\"privato\">Privato</option><option value=\"azienda\">Azienda</option></select></label><label>Nome<input value={f.first_name} onChange={e=>setF({...f,first_name:e.target.value})}/></label><label>Cognome<input value={f.last_name} onChange={e=>setF({...f,last_name:e.target.value})}/></label><label className=\"span2\">Ragione sociale<input value={f.company_name} onChange={e=>setF({...f,company_name:e.target.value})}/></label>"
-          new_fields = "<label className=\"clientTypeField\">Tipo<select value={f.customer_type} onChange={e=>setF({...f,customer_type:e.target.value})}><option value=\"privato\">Privato</option><option value=\"azienda\">Azienda</option></select></label>{f.customer_type==='azienda'?<label className=\"span2\">Denominazione<input value={f.company_name} onChange={e=>setF({...f,company_name:e.target.value})}/></label>:<><label>Nome<input value={f.first_name} onChange={e=>setF({...f,first_name:e.target.value})}/></label><label>Cognome<input value={f.last_name} onChange={e=>setF({...f,last_name:e.target.value})}/></label></>}"
-          if old_save not in s or old_fields not in s:
-              raise SystemExit('Expected ClientModal source not found; no changes applied')
-          s = s.replace(old_save, new_save, 1).replace(old_fields, new_fields, 1)
-          p.write_text(s)
-
-          p = Path('app/globals.css')
-          s = p.read_text()
-          old_css = ".span2{grid-column:span 2}"
-          new_css = ".clientTypeField{grid-column:1/-1;width:100%;max-width:320px}.clientTypeField select{min-height:52px}.span2{grid-column:span 2}"
-          if old_css not in s:
-              raise SystemExit('Expected CSS source not found; no changes applied')
-          p.write_text(s.replace(old_css, new_css, 1))
-          PY
-      - name: Commit changes
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add app/page.tsx app/globals.css
-          git diff --cached --quiet && exit 0
-          git commit -m "Adatta scheda cliente a Privato e Azienda"
-          git push origin HEAD:feature/scheda-cliente-tipo
+      - run: echo "Client form redesign already applied"
