@@ -1,0 +1,32 @@
+name: Hotfix client build
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/hotfix-client-build.yml']
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Correggi tipi scheda cliente
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('app/page.tsx')
+          s = p.read_text()
+          old = "const payload=f.customer_type==='azienda'?{...f,first_name:null,last_name:null}:{...f,company_name:null};"
+          new = "const payload=f.customer_type==='azienda'?{...f,first_name:'',last_name:''}:{...f,company_name:''};"
+          if old not in s:
+              raise SystemExit('Pattern non trovato')
+          p.write_text(s.replace(old, new, 1))
+          PY
+          rm .github/workflows/hotfix-client-build.yml
+      - name: Commit hotfix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/page.tsx .github/workflows/hotfix-client-build.yml
+          git commit -m "Corregge build scheda cliente"
+          git push
