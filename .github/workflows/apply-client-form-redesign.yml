@@ -1,8 +1,0 @@
-name: Client form redesign helper (inactive)
-on:
-  workflow_dispatch:
-jobs:
-  noop:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Client form redesign already applied"
