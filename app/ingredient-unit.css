@@ -1,23 +1,13 @@
 .formGrid:has(> label:nth-child(3) > input[type="number"][step="0.0001"]) > label:nth-child(1){grid-column:1/-1;grid-row:1}
 .formGrid:has(> label:nth-child(3) > input[type="number"][step="0.0001"]) > label:nth-child(4){grid-column:1;grid-row:2}
-.formGrid:has(> label:nth-child(3) > input[type="number"][step="0.0001"]) > label:nth-child(3){grid-column:2;grid-row:2;width:66%;justify-self:end}
-.formGrid:has(> label:nth-child(3) > input[type="number"][step="0.0001"]) > label:nth-child(2){grid-column:1;grid-row:3}
-.formGrid:has(> label:nth-child(3) > input[type="number"][step="0.0001"]) > label:nth-child(2) > select,
-.formGrid:has(> label:nth-child(3) > input[type="number"][step="0.0001"]) > label:nth-child(4) > select,
-.formGrid:has(> label:nth-child(3) > input[type="number"][step="0.0001"]) > label:nth-child(3) > input{box-sizing:border-box;width:100%;height:44px;min-height:44px;max-height:44px;border:1px solid #dcd9d2;border-radius:10px;padding:0 12px;font-size:inherit;font-weight:inherit;background:#fff;color:var(--ink)}
-@media(max-width:640px){.formGrid:has(> label:nth-child(3) > input[type="number"][step="0.0001"]) > label:nth-child(1),.formGrid:has(> label:nth-child(3) > input[type="number"][step="0.0001"]) > label:nth-child(2),.formGrid:has(> label:nth-child(3) > input[type="number"][step="0.0001"]) > label:nth-child(3),.formGrid:has(> label:nth-child(3) > input[type="number"][step="0.0001"]) > label:nth-child(4){grid-column:1/-1;grid-row:auto;width:100%;justify-self:stretch}}
-
-.ingredientImpactLayout{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(300px,.8fr);gap:20px;align-items:start;padding-right:22px}
-.ingredientImpactLayout>.formGrid{padding-right:0}
-.ingredientImpactBox{margin-top:20px;border:1px solid #e5e2db;border-left:4px solid var(--accent);border-radius:14px;background:#faf9f6;padding:18px;color:var(--ink)}
-.ingredientImpactTitle{display:flex;align-items:center;gap:10px;font-size:18px}
-.ingredientImpactTitle>span{width:25px;height:25px;border:1.5px solid var(--accent);border-radius:50%;display:grid;place-items:center;color:var(--accent);font-weight:800;font-size:14px}
-.ingredientImpactBox>p{color:var(--muted);font-size:13px;line-height:1.5;margin:14px 0 18px}
-.ingredientImpactHead{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;margin-bottom:7px}
-.ingredientImpactHead b{background:var(--soft);color:var(--accent-dark);border-radius:8px;padding:4px 8px}
-.ingredientImpactList{border-top:1px solid var(--line)}
-.ingredientImpactRecipe{padding:11px 2px;border-bottom:1px solid var(--line)}
-.ingredientImpactRecipe strong{display:block;font-size:13px}
-.ingredientImpactRecipe small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
-.ingredientImpactEmpty{border-top:1px solid var(--line);padding:14px 2px;color:var(--muted);font-size:12px}
-@media(max-width:800px){.ingredientImpactLayout{grid-template-columns:1fr;padding-right:0}.ingredientImpactLayout>.formGrid{padding-right:22px}.ingredientImpactBox{margin:0 22px 22px}}
+.formGrid:has(> label:nth-child(3) > input[type="number"][step="0.0001"]) > label:nth-child(3){grid-column:2;grid-row:2;width:100%;justify-self:end}
+.formGrid:has(> label:nth-child(3) > input[type="number"][step="0.0001"]) > label:nth-child(2){grid-column:1/-1;grid-row:3}
+.formGrid:has(> label:nth-child(3) > input[type="number"][step="0.0001"]) > label:nth-child(2) > select,.formGrid:has(> label:nth-child(3) > input[type="number"][step="0.0001"]) > label:nth-child(4) > select,.formGrid:has(> label:nth-child(3) > input[type="number"][step="0.0001"]) > label:nth-child(3) > input{box-sizing:border-box;width:100%;height:48px;min-height:48px;max-height:48px;border:1px solid #dcd9d2;border-radius:10px;padding:0 12px;background:#fff;color:var(--ink)}
+.ingredientImpactLayout{position:relative;display:grid;grid-template-columns:minmax(0,1.65fr) minmax(330px,.9fr);gap:28px;align-items:start;padding:0 22px 104px}
+.ingredientImpactLayout>.formGrid{padding:22px 0 0;gap:18px}
+.ingredientImpactLayout>.formGrid .formActions{position:absolute;right:0;bottom:20px;width:100%;padding:20px 0 0;border-top:1px solid var(--line);justify-content:flex-end}
+.ingredientImpactBox{margin-top:22px;border:1px solid #ead9ad;border-left:4px solid var(--accent);border-radius:14px;background:#fcfaf4;padding:20px;color:var(--ink);box-shadow:0 3px 12px rgba(0,0,0,.025)}
+.ingredientImpactTitle{display:flex;align-items:center;gap:11px;font-size:19px;margin-bottom:13px}.ingredientImpactTitle>span{width:28px;height:28px;border:2px solid var(--accent);border-radius:50%;display:grid;place-items:center;color:var(--accent);font-weight:800;font-size:15px;font-family:Georgia,serif}
+.ingredientImpactBox>p{color:#5f5b54;font-size:13px;line-height:1.55;margin:0 0 19px}.ingredientImpactHead{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;margin-bottom:7px}.ingredientImpactHead strong{font-size:13px}.ingredientImpactHead b{min-width:30px;text-align:center;background:var(--soft);color:var(--accent-dark);border-radius:8px;padding:5px 8px;font-size:13px}
+.ingredientImpactList{border-top:1px solid var(--line)}.ingredientImpactRecipe{position:relative;padding:14px 30px 14px 54px;border-bottom:1px solid var(--line);min-height:62px;display:flex;align-items:center}.ingredientImpactRecipe:before{content:'22';position:absolute;left:0;top:12px;width:42px;height:42px;border-radius:10px;background:var(--soft);display:grid;place-items:center;color:var(--accent-dark);font-size:13px;font-weight:800}.ingredientImpactRecipe:after{content:'›';position:absolute;right:4px;top:50%;transform:translateY(-50%);font-size:28px;color:var(--accent-dark);font-weight:300}.ingredientImpactRecipe strong{display:block;font-size:14px;line-height:1.25}.ingredientImpactRecipe small{display:block;color:var(--muted);font-size:11px;margin-top:4px}.ingredientImpactEmpty{border-top:1px solid var(--line);padding:15px 2px;color:var(--muted);font-size:12px}
+@media(max-width:800px){.formGrid:has(> label:nth-child(3) > input[type="number"][step="0.0001"]) > label:nth-child(1),.formGrid:has(> label:nth-child(3) > input[type="number"][step="0.0001"]) > label:nth-child(2),.formGrid:has(> label:nth-child(3) > input[type="number"][step="0.0001"]) > label:nth-child(3),.formGrid:has(> label:nth-child(3) > input[type="number"][step="0.0001"]) > label:nth-child(4){grid-column:1/-1;grid-row:auto;width:100%;justify-self:stretch}.ingredientImpactLayout{grid-template-columns:1fr;gap:4px;padding:0 22px 104px}.ingredientImpactLayout>.formGrid{padding-left:0;padding-right:0}.ingredientImpactBox{margin-top:0}.ingredientImpactLayout>.formGrid .formActions{right:0}}
