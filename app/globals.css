@@ -19,3 +19,8 @@
 .productionTable .productionDishRow td{padding:22px 28px;font-size:16px}
 .productionTable .productionDishRow strong{display:inline;font-size:18px}
 .productionTable .productionCategory{font-size:18px;font-weight:400;color:var(--muted)}
+
+/* Filtri date report: etichette più leggibili */
+.reportDates{display:flex;align-items:center;gap:28px}
+.reportDates label{display:flex;align-items:center;gap:14px;white-space:nowrap;font-weight:600}
+.reportDates input[type="date"]{margin-left:4px}
