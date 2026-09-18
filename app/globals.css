@@ -7,3 +7,8 @@
 
 /* Report fabbisogno: maggiore respiro tra hero e filtri */
 .hero.compact + .toolbar{margin-top:24px}
+
+/* Report produzione dettagliato */
+.productionTable .productionDishRow td{background:#fff;border-top:3px solid var(--ink);border-bottom:1px solid var(--line);padding:10px 14px;font-size:15px}
+.productionTable .productionDishRow:first-child td{border-top:0}
+.productionTable th:nth-child(1){width:12%}.productionTable th:nth-child(2){width:42%}.productionTable th:nth-child(3){width:15%}.productionTable th:nth-child(4){width:12%}.productionTable th:nth-child(5){width:19%}
