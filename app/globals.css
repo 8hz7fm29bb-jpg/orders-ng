@@ -29,3 +29,9 @@
 .productionTable th{padding:24px 36px}
 .productionTable td{padding:26px 36px}
 .productionTable .productionDishRow td{padding:28px 36px}
+
+/* Margini evidenti e dedicati al pannello report */
+.productionReportPanel .panelHead{padding:30px 52px 26px;margin-bottom:0}
+.productionReportPanel .productionTable th{padding:26px 52px}
+.productionReportPanel .productionTable td{padding:28px 52px}
+.productionReportPanel .productionTable .productionDishRow td{padding:30px 52px}
