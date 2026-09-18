@@ -12,3 +12,10 @@
 .productionTable .productionDishRow td{background:#fff;border-top:3px solid var(--ink);border-bottom:1px solid var(--line);padding:10px 14px;font-size:15px}
 .productionTable .productionDishRow:first-child td{border-top:0}
 .productionTable th:nth-child(1){width:12%}.productionTable th:nth-child(2){width:42%}.productionTable th:nth-child(3){width:15%}.productionTable th:nth-child(4){width:12%}.productionTable th:nth-child(5){width:19%}
+
+/* Rifinitura leggibilità report produzione */
+.productionTable th{padding:18px 28px}
+.productionTable td{padding:20px 28px}
+.productionTable .productionDishRow td{padding:22px 28px;font-size:16px}
+.productionTable .productionDishRow strong{display:inline;font-size:18px}
+.productionTable .productionCategory{font-size:18px;font-weight:400;color:var(--muted)}
