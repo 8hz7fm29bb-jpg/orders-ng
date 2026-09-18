@@ -24,3 +24,8 @@
 .reportDates{display:flex;align-items:center;gap:28px}
 .reportDates label{display:flex;align-items:center;gap:14px;white-space:nowrap;font-weight:600}
 .reportDates input[type="date"]{margin-left:4px}
+
+/* Ulteriore respiro nel foglio produzione */
+.productionTable th{padding:24px 36px}
+.productionTable td{padding:26px 36px}
+.productionTable .productionDishRow td{padding:28px 36px}
