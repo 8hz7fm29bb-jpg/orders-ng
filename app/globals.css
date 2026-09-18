@@ -56,3 +56,7 @@
 
 .reportPeriod{margin:6px 0 0;color:var(--muted);font-size:12px;font-weight:600}
 @media print{.reportPeriod{display:block!important;margin:2mm 0 0!important;font-size:9pt!important;color:#444!important}}
+
+/* Margine superiore di sicurezza per la stampa Safari */
+@page{size:A4 portrait;margin:18mm 12mm 12mm}
+@media print{.productionReportPanel{padding-top:3mm!important}}
