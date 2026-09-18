@@ -9,6 +9,12 @@ export function Modal({ title, children, onClose, wide = false }: { title: strin
   const eventNumber = eventMatch ? Number(eventMatch[1]) : null
   const isEvent = eventNumber !== null || title === 'Nuovo evento'
 
+  function saveEventAndMenu() {
+    if (eventNumber !== null) window.dispatchEvent(new Event('orders-ng-save-menu'))
+    const form = document.getElementById('eventMainForm') as HTMLFormElement | null
+    form?.requestSubmit()
+  }
+
   async function deleteEvent() {
     if (eventNumber === null || !supabase) return
     if (!confirm(`Cancellare definitivamente l'evento #${eventNumber}?`)) return
@@ -30,7 +36,7 @@ export function Modal({ title, children, onClose, wide = false }: { title: strin
         {isEvent && (
           <div className="eventDeleteArea">
             {eventNumber !== null && <button type="button" className="eventDeleteButton" onClick={deleteEvent}><Trash2 size={17} /> Elimina evento</button>}
-            <button type="submit" form="eventMainForm" className="primary"><Save size={17} /> Salva evento</button>
+            <button type="button" className="primary" onClick={saveEventAndMenu}><Save size={17} /> Salva evento</button>
           </div>
         )}
       </div>
