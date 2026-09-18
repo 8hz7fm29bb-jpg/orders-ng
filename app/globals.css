@@ -35,3 +35,8 @@
 .productionReportPanel .productionTable th{padding:26px 52px}
 .productionReportPanel .productionTable td{padding:28px 52px}
 .productionReportPanel .productionTable .productionDishRow td{padding:30px 52px}
+
+/* Azioni export report */
+.reportExportActions{display:flex;align-items:center;gap:10px}
+.reportExportActions .secondary{white-space:nowrap}
+@media(max-width:760px){.productionReportPanel .panelHead{gap:18px;flex-direction:column}.reportExportActions{width:100%;flex-wrap:wrap}}
