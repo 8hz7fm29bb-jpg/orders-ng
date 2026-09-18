@@ -28,7 +28,7 @@ export async function loadEventMenuByNumber(eventNumber:number){
  const loaded=await loadRecipes();if(loaded.error)return{eventId:eventRes.id,menuId:null,recipes:[],lines:[],error:loaded.error}
  const menuRes=await supabase.from('event_menus').select('*').eq('event_id',eventRes.id).eq('active',true).limit(1).maybeSingle();if(menuRes.error)return{eventId:eventRes.id,menuId:null,recipes:loaded.recipes,lines:[],error:menuRes.error.message};if(!menuRes.data)return{eventId:eventRes.id,menuId:null,recipes:loaded.recipes,lines:[],error:null}
  const itemsRes=await supabase.from('event_menu_items').select('*').eq('menu_id',menuRes.data.id).order('sort_order',{ascending:true});if(itemsRes.error)return{eventId:eventRes.id,menuId:menuRes.data.id as string,recipes:loaded.recipes,lines:[],error:itemsRes.error.message}
- return{eventId:eventRes.id,menuId:menuRes.data.id as string,recipes:loaded.recipes,lines:(itemsRes.data||[]).map((x:any)=>({recipe_id:x.recipe_id||'',course_type:x.course_type||'other',sale_price:x.sale_price==null?undefined:Number(x.sale_price)})),error:null}
+ return{eventId:eventRes.id,menuId:menuRes.data.id as string,recipes:loaded.recipes,lines:(itemsRes.data||[]).map((x:any)=>({recipe_id:x.recipe_id||'',course_type:loaded.recipes.find(r=>r.id===x.recipe_id)?.category||'other',sale_price:x.sale_price==null?undefined:Number(x.sale_price)})),error:null}
 }
 
 export async function saveEventMenuByNumber(eventNumber:number,menuId:string|null,lines:EventMenuLine[],recipes:MenuRecipeOption[]){
@@ -37,6 +37,6 @@ export async function saveEventMenuByNumber(eventNumber:number,menuId:string|nul
  let id=menuId
  if(!id){const created=await supabase.from('event_menus').insert({event_id:eventRes.id,name:'Menu principale',active:true}).select('id').single();if(created.error)return{menuId:null,error:created.error.message};id=created.data.id as string}
  const del=await supabase.from('event_menu_items').delete().eq('menu_id',id);if(del.error)return{menuId:id,error:del.error.message}
- if(lines.length){const rows=lines.map((line,index)=>{const r=recipes.find(x=>x.id===line.recipe_id);return{menu_id:id,recipe_id:line.recipe_id,course_type:line.course_type,display_name:r?.name||'Portata',portions:1,sale_price:r?.sale_price||0,sort_order:index,customer_visible:true}});const ins=await supabase.from('event_menu_items').insert(rows);if(ins.error)return{menuId:id,error:ins.error.message}}
+ if(lines.length){const rows=lines.map((line,index)=>{const r=recipes.find(x=>x.id===line.recipe_id);return{menu_id:id,recipe_id:line.recipe_id,course_type:r?.category||'other',display_name:r?.name||'Portata',portions:1,sale_price:r?.sale_price||0,sort_order:index,customer_visible:true}});const ins=await supabase.from('event_menu_items').insert(rows);if(ins.error)return{menuId:id,error:ins.error.message}}
  return{menuId:id,error:null as string|null}
 }
