@@ -44,3 +44,12 @@
 /* Stampa A4 verticale: report a tutta larghezza */
 @page{size:A4 portrait;margin:12mm}
 @media print{html,body{width:210mm;background:#fff!important}.sidebar,.topbar,.hero,.toolbar,.stats,.reportExportActions{display:none!important}.content{width:auto!important;max-width:none!important;padding:0!important;margin:0!important}.productionReportPanel{width:100%!important;max-width:none!important;margin:0!important;padding:0!important;box-shadow:none!important;border:0!important;border-radius:0!important;overflow:visible!important}.productionReportPanel .panelHead{padding:0 0 7mm!important}.productionReportPanel .responsiveTable{width:100%!important;overflow:visible!important}.productionReportPanel table{width:100%!important;min-width:0!important;table-layout:fixed!important;border-collapse:collapse!important}.productionReportPanel .productionTable th,.productionReportPanel .productionTable td,.productionReportPanel .productionTable .productionDishRow td{padding:2.2mm 2.8mm!important;font-size:9pt!important;line-height:1.15!important}.productionReportPanel .productionTable .productionDishRow strong,.productionReportPanel .productionCategory{font-size:9.5pt!important}.productionReportPanel h3{font-size:17pt!important;margin:1mm 0!important}.productionReportPanel .eyebrow{font-size:8pt!important}.productionTable th:nth-child(1){width:12%!important}.productionTable th:nth-child(2){width:43%!important}.productionTable th:nth-child(3){width:15%!important}.productionTable th:nth-child(4){width:10%!important}.productionTable th:nth-child(5){width:20%!important}button{display:none!important}tr{break-inside:avoid;page-break-inside:avoid}}
+
+/* Correzione stampa Safari: rimuove la larghezza desktop del contenitore principale */
+@media print{
+.main{width:100%!important;margin:0!important;min-height:0!important}
+.content{box-sizing:border-box!important;width:100%!important;max-width:100%!important;margin:0!important;padding:0!important}
+.productionReportPanel{box-sizing:border-box!important;width:100%!important;max-width:100%!important}
+.productionReportPanel .responsiveTable{display:block!important;width:100%!important;max-width:100%!important}
+.productionReportPanel table{width:100%!important;max-width:100%!important;min-width:0!important}
+}
