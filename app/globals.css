@@ -40,3 +40,6 @@
 .reportExportActions{display:flex;align-items:center;gap:10px}
 .reportExportActions .secondary{white-space:nowrap}
 @media(max-width:760px){.productionReportPanel .panelHead{gap:18px;flex-direction:column}.reportExportActions{width:100%;flex-wrap:wrap}}
+
+/* Stampa: mostra solo il report corrente */
+@media print{body{background:#fff}.sidebar,.topbar,.hero,.toolbar,.stats,.reportExportActions{display:none!important}.content{padding:0!important;margin:0!important}.productionReportPanel{box-shadow:none!important;border:0!important}.productionReportPanel .panelHead{padding:16px 20px!important}.productionReportPanel .productionTable th,.productionReportPanel .productionTable td,.productionReportPanel .productionTable .productionDishRow td{padding:10px 14px!important}button{display:none!important}}
