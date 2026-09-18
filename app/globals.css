@@ -53,3 +53,6 @@
 .productionReportPanel .responsiveTable{display:block!important;width:100%!important;max-width:100%!important}
 .productionReportPanel table{width:100%!important;max-width:100%!important;min-width:0!important}
 }
+
+.reportPeriod{margin:6px 0 0;color:var(--muted);font-size:12px;font-weight:600}
+@media print{.reportPeriod{display:block!important;margin:2mm 0 0!important;font-size:9pt!important;color:#444!important}}
