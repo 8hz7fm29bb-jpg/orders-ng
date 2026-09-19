@@ -13,11 +13,11 @@ export function EventMenuEditor({eventNumber}:{eventNumber:number}){
  const[adultLines,setAdultLines]=useState<EventMenuLine[]>([]),[babyLines,setBabyLines]=useState<EventMenuLine[]>([])
  const[adults,setAdults]=useState(0),[baby,setBaby]=useState(0)
  const[loading,setLoading]=useState(true),[saving,setSaving]=useState(false),[message,setMessage]=useState('')
- useEffect(()=>{let cancelled=false;(async()=>{setLoading(true);setMessage('');if(supabase){const ev=await supabase.from('events').select('adults,baby').eq('event_number',eventNumber).single();if(ev.data){setAdults(Number(ev.data.adults||0));setBaby(Number(ev.data.baby||0))}}
+ useEffect(()=>{let cancelled=false;(async()=>{setLoading(true);setMessage('');let adultCount=0,babyCount=0;if(supabase){const ev=await supabase.from('events').select('adults,baby').eq('event_number',eventNumber).single();if(ev.data){adultCount=Number(ev.data.adults||0);babyCount=Number(ev.data.baby||0);setAdults(adultCount);setBaby(babyCount)}}
  const [a,b]=await Promise.all([loadEventMenuByNumber(eventNumber,'adult'),loadEventMenuByNumber(eventNumber,'baby')]);if(cancelled)return
  setAdultMenuId(a.menuId);setBabyMenuId(b.menuId);setRecipes(a.recipes.length?a.recipes:b.recipes)
- setAdultLines(a.lines.map(l=>({...l,portions:Number(l.portions||0)>1?Number(l.portions):Number(adults||0)})))
- setBabyLines(b.lines.map(l=>({...l,portions:Number(l.portions||0)>0?Number(l.portions):Number(baby||0)})))
+ setAdultLines(a.lines.map(l=>({...l,portions:Number(l.portions||0)>1?Number(l.portions):adultCount})))
+ setBabyLines(b.lines.map(l=>({...l,portions:Number(l.portions||0)>0?Number(l.portions):babyCount})))
  if(a.error||b.error)setMessage(a.error||b.error||'');setLoading(false)})();return()=>{cancelled=true}},[eventNumber])
  const adultTotal=useMemo(()=>adultLines.reduce((sum,l)=>sum+(recipes.find(r=>r.id===l.recipe_id)?.sale_price||l.sale_price||0),0),[adultLines,recipes])
  function linesFor(a:Audience){return a==='adult'?adultLines:babyLines}
