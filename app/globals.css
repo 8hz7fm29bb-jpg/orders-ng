@@ -65,3 +65,5 @@
 .hero .eyebrow{color:#ffd400}
 .navItem.active{box-shadow:inset 3px 0 0 #ffd400}
 .flowRow>span{color:#ffd400}
+
+.hero .heroAuthor{font-size:11px!important;letter-spacing:.04em;margin-top:8px!important;opacity:.62;font-weight:500}
