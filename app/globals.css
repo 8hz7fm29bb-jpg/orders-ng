@@ -111,3 +111,24 @@
 .eventMenuLine>strong:nth-child(2){text-align:left;font-weight:400}
 .eventMenuLine .menuPortionsInput{font-weight:400!important;text-align:center}
 .eventMenuLine .menuPrice{text-align:right}
+
+/* Griglia unica intestazioni/righe menu evento */
+.eventMenuHeader,.eventMenuLine{
+  grid-template-columns:minmax(0,1fr) 190px 140px 130px 156px!important;
+  column-gap:14px!important;
+}
+.eventMenuHeader>span:nth-child(1){grid-column:1;text-align:left}
+.eventMenuHeader>span:nth-child(2){grid-column:2;text-align:left}
+.eventMenuHeader>span:nth-child(3){grid-column:3;text-align:center}
+.eventMenuHeader>span:nth-child(4){grid-column:4;text-align:right}
+.eventMenuLine>select{grid-column:1}
+.eventMenuLine>strong:nth-child(2){grid-column:2;text-align:left;font-weight:400}
+.eventMenuLine>.menuPortionsInput{grid-column:3;text-align:center;font-weight:400!important;width:100%}
+.eventMenuLine>.menuPrice{grid-column:4;text-align:right}
+.eventMenuLine>.menuLineActions{grid-column:5}
+@media(max-width:900px){
+ .eventMenuLine{grid-template-columns:1fr 90px!important}
+ .eventMenuLine>select,.eventMenuLine>strong:nth-child(2),.eventMenuLine>.menuPortionsInput,.eventMenuLine>.menuPrice,.eventMenuLine>.menuLineActions{grid-column:auto}
+ .eventMenuLine>select{grid-column:1/-1}
+ .eventMenuLine>.menuLineActions{grid-column:1/-1}
+}
