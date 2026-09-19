@@ -78,3 +78,6 @@
 
 /* Firma citazione Dashboard */
 .hero .heroAuthor{font-size:18px!important;line-height:1.2!important;font-weight:650!important}
+
+/* Prezzo per persona */
+.finalPriceField input{color:#20262d!important}
