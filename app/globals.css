@@ -67,3 +67,8 @@
 .flowRow>span{color:#ffd400}
 
 .hero .heroAuthor{font-size:11px!important;letter-spacing:.04em;margin-top:8px!important;opacity:.62;font-weight:500}
+
+/* Citazione Dashboard */
+.heroQuote{font-size:clamp(28px,2.7vw,46px)!important;line-height:1.08!important;white-space:nowrap}
+.hero .heroAuthor{font-size:14px!important;margin-top:12px!important;opacity:.62;font-weight:600}
+@media(max-width:1200px){.heroQuote{white-space:normal}}
