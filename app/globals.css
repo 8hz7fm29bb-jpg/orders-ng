@@ -75,3 +75,6 @@
 
 /* Citazione Dashboard - dimensione definitiva */
 .heroQuote{font-size:clamp(25px,2.25vw,38px)!important;line-height:1.08!important}
+
+/* Firma citazione Dashboard */
+.hero .heroAuthor{font-size:18px!important;line-height:1.2!important;font-weight:650!important}
