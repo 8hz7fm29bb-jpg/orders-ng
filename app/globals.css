@@ -174,3 +174,7 @@
 /* Pulsante Nuovo evento coordinato al giallo del logo */
 .topbar .primary{background:var(--accent);color:var(--ink)}
 .topbar .primary:hover{background:#e8c100}
+
+
+/* Selettore report: tab attiva gialla */
+.categoryTabs .categoryTab.active{background:var(--accent);color:var(--ink);border-color:var(--accent)}
