@@ -183,3 +183,8 @@
 /* Nuovo evento nella barra di ricerca */
 .searchRow .primary,.searchBar .primary,.content .primary{background:var(--accent);color:var(--ink);border-color:var(--accent)}
 .searchRow .primary:hover,.searchBar .primary:hover,.content .primary:hover{background:#e8c100}
+
+
+/* CTA di creazione coordinati al giallo Orders */
+.content .secondary{background:var(--accent);color:var(--ink);border-color:var(--accent)}
+.content .secondary:hover{background:#e8c100;border-color:#e8c100}
