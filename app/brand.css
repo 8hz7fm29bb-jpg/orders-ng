@@ -1,6 +1,6 @@
 .brand .brandMark,.loginCard .brandMark,.setupCard .brandMark{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#ffd400;color:#20262d;font-size:0;font-weight:800;line-height:1;border:0;box-shadow:none;overflow:hidden}
 .brand .brandMark{width:54px;height:54px;min-width:54px;border-radius:17px}
-.brand .brandMark::before,.loginCard .brandMark::before,.setupCard .brandMark::before{content:'22';display:block;font-size:25px;font-weight:900;line-height:.9;letter-spacing:-1px}
+.brand .brandMark::before,.loginCard .brandMark::before,.setupCard .brandMark::before{content:'22';display:block;font-size:29px;font-weight:900;line-height:.82;letter-spacing:-1px}
 .brand .brandMark::after,.loginCard .brandMark::after,.setupCard .brandMark::after{content:'ORDERS';display:block;width:72%;margin-top:4px;padding-top:3px;border-top:2px solid currentColor;font-size:7px;font-weight:850;letter-spacing:1.25px;text-align:center}
 .brand>div:nth-child(2)>strong{font-size:0}.brand>div:nth-child(2)>strong::after{content:'Orders NextGen';font-size:17px}.brand>div:nth-child(2)>span{font-size:12px}
 .topbar .eyebrow{font-size:0}.topbar .eyebrow::after{content:'ORDERS NEXTGEN';font-size:10px}
