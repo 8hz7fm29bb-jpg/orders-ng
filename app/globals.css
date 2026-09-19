@@ -103,3 +103,11 @@
 .menuPortionsInput{font-weight:400!important}
 .eventMenuBlock{padding-bottom:22px!important}
 .eventMenuBlock>.fieldHint{display:block;margin-top:16px;margin-bottom:2px}
+
+/* Allineamento definitivo intestazioni menu evento */
+.eventMenuHeader>span:nth-child(2){text-align:left;padding-left:0}
+.eventMenuHeader>span:nth-child(3){text-align:center}
+.eventMenuHeader>span:nth-child(4){text-align:right}
+.eventMenuLine>strong:nth-child(2){text-align:left;font-weight:400}
+.eventMenuLine .menuPortionsInput{font-weight:400!important;text-align:center}
+.eventMenuLine .menuPrice{text-align:right}
