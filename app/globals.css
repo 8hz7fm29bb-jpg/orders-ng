@@ -169,3 +169,8 @@
  .kitchenShell .kitchenEventsPanel th:nth-child(6),.kitchenShell .kitchenEventsPanel th:nth-child(7){width:13%!important}
  .kitchenShell .productionReportPanel{padding-top:0!important}
 }
+
+
+/* Pulsante Nuovo evento coordinato al giallo del logo */
+.topbar .primary{background:var(--accent);color:var(--ink)}
+.topbar .primary:hover{background:#e8c100}
