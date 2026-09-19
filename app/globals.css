@@ -147,3 +147,25 @@
 .kitchenReportEmpty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:180px;margin-top:20px;border:1px dashed #d8d4ca;border-radius:20px;color:var(--muted);text-align:center}
 .kitchenReportEmpty strong{color:#20262d;font-size:17px}
 @media(max-width:760px){.kitchenIntro{align-items:flex-start}.kitchenSelectedCount{min-width:90px}.kitchenShell .sidebar{display:flex}}
+
+
+/* Stampa account Cucina: mantieni la tabella eventi, elimina solo l'intestazione introduttiva */
+@media print{
+ .kitchenShell .kitchenIntro{display:none!important}
+ .kitchenShell .search{display:none!important}
+ .kitchenShell .kitchenEventsPanel{display:block!important;width:100%!important;max-width:100%!important;margin:0 0 6mm!important;padding:0!important;box-shadow:none!important;border:0!important;border-radius:0!important;overflow:visible!important}
+ .kitchenShell .kitchenEventsPanel .responsiveTable{display:block!important;width:100%!important;overflow:visible!important}
+ .kitchenShell .kitchenEventsPanel table{display:table!important;width:100%!important;min-width:0!important;table-layout:fixed!important;border-collapse:collapse!important}
+ .kitchenShell .kitchenEventsPanel thead{display:table-header-group!important}
+ .kitchenShell .kitchenEventsPanel tbody{display:table-row-group!important}
+ .kitchenShell .kitchenEventsPanel tr{display:table-row!important}
+ .kitchenShell .kitchenEventsPanel th,.kitchenShell .kitchenEventsPanel td{display:table-cell!important;padding:2mm 2.2mm!important;font-size:8.5pt!important;line-height:1.15!important}
+ .kitchenShell .kitchenEventsPanel th{font-size:7.5pt!important}
+ .kitchenShell .kitchenEventsPanel .kitchenCheckCol{display:none!important}
+ .kitchenShell .kitchenEventsPanel th:nth-child(2){width:9%!important}
+ .kitchenShell .kitchenEventsPanel th:nth-child(3){width:15%!important}
+ .kitchenShell .kitchenEventsPanel th:nth-child(4){width:36%!important}
+ .kitchenShell .kitchenEventsPanel th:nth-child(5){width:14%!important}
+ .kitchenShell .kitchenEventsPanel th:nth-child(6),.kitchenShell .kitchenEventsPanel th:nth-child(7){width:13%!important}
+ .kitchenShell .productionReportPanel{padding-top:0!important}
+}
