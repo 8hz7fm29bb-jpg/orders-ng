@@ -132,3 +132,18 @@
  .eventMenuLine>select{grid-column:1/-1}
  .eventMenuLine>.menuLineActions{grid-column:1/-1}
 }
+
+/* Area Cucina */
+.kitchenIntro{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:18px;padding:24px 28px;border-radius:22px;background:#20211f;color:#fff}
+.kitchenIntro h2{margin:5px 0 4px;font-size:28px}
+.kitchenIntro p{margin:0;color:#c8c6c0}
+.kitchenSelectedCount{min-width:118px;text-align:center;padding:14px 18px;border-radius:18px;background:#ffd400;color:#20262d}
+.kitchenSelectedCount strong{display:block;font-size:30px;line-height:1}
+.kitchenSelectedCount span{display:block;margin-top:5px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.kitchenCheckCol{width:46px;text-align:center!important}
+.kitchenEventsPanel tbody tr{cursor:pointer}
+.kitchenEventsPanel input[type=checkbox]{width:19px;height:19px;accent-color:#ffd400;cursor:pointer}
+.kitchenEventSelected td{background:#fff9d9!important}
+.kitchenReportEmpty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:180px;margin-top:20px;border:1px dashed #d8d4ca;border-radius:20px;color:var(--muted);text-align:center}
+.kitchenReportEmpty strong{color:#20262d;font-size:17px}
+@media(max-width:760px){.kitchenIntro{align-items:flex-start}.kitchenSelectedCount{min-width:90px}.kitchenShell .sidebar{display:flex}}
