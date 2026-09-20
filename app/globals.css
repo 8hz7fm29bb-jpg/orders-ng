@@ -204,3 +204,9 @@
 .recipeReadOnlySection p{margin:8px 0 0;white-space:pre-wrap;line-height:1.6;color:var(--ink)}
 .kitchenRecipeReadOnly .ingredientImpactList{margin-top:12px}
 @media(max-width:760px){.kitchenReportToolbar{margin-top:22px!important}.recipeReadOnlyMeta{align-items:flex-start;flex-direction:column}}
+
+/* Ricettario Cucina: righe ingredienti senza indicatori/frecce laterali */
+.kitchenRecipeReadOnly .ingredientImpactRecipe::after,
+.kitchenRecipeReadOnly .ingredientImpactRecipe::before{content:none!important;display:none!important}
+.kitchenRecipeReadOnly .ingredientImpactRecipe>svg,
+.kitchenRecipeReadOnly .ingredientImpactRecipe>button{display:none!important}
