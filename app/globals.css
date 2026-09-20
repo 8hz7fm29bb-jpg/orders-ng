@@ -194,3 +194,13 @@
 .heroBadge svg{width:48px;height:48px;align-self:center;margin-right:6px;stroke-width:2.2}
 
 .kitchenProductionLabel{color:var(--accent)!important}
+
+
+/* Cucina: separazione selettore report e ricettario in sola lettura */
+.kitchenReportToolbar{margin-top:30px!important}
+.kitchenRecipeReadOnly{display:grid;gap:20px}
+.recipeReadOnlyMeta{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:2px 2px 0}
+.recipeReadOnlySection{padding:20px 22px;border:1px solid var(--line);border-radius:18px;background:#fff}
+.recipeReadOnlySection p{margin:8px 0 0;white-space:pre-wrap;line-height:1.6;color:var(--ink)}
+.kitchenRecipeReadOnly .ingredientImpactList{margin-top:12px}
+@media(max-width:760px){.kitchenReportToolbar{margin-top:22px!important}.recipeReadOnlyMeta{align-items:flex-start;flex-direction:column}}
