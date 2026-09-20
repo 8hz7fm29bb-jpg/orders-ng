@@ -210,3 +210,10 @@
 .kitchenRecipeReadOnly .ingredientImpactRecipe::before{content:none!important;display:none!important}
 .kitchenRecipeReadOnly .ingredientImpactRecipe>svg,
 .kitchenRecipeReadOnly .ingredientImpactRecipe>button{display:none!important}
+
+/* Ricettario Cucina: margini interni della finestra di consultazione */
+.kitchenRecipeReadOnly{padding:0 28px 28px}
+.kitchenRecipeReadOnly .compositionBox,
+.kitchenRecipeReadOnly .recipeReadOnlySection{width:100%;margin-left:auto;margin-right:auto}
+.kitchenRecipeReadOnly .recipeReadOnlySection:last-child{margin-bottom:12px}
+@media(max-width:760px){.kitchenRecipeReadOnly{padding:0 18px 22px}}
