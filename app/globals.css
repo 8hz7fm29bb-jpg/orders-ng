@@ -192,3 +192,5 @@
 
 /* Dashboard: calendario nel badge data più grande, alto quanto le due righe */
 .heroBadge svg{width:48px;height:48px;align-self:center;margin-right:6px;stroke-width:2.2}
+
+.kitchenProductionLabel{color:var(--accent)!important}
