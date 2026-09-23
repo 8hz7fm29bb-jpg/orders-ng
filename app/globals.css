@@ -229,3 +229,7 @@
 
 /* More breathing room for ingredient modal footer actions */
 .ingredientImpactLayout .formActions{padding-bottom:16px;padding-right:16px}
+
+/* Ingredient editor V2: explicit placement prevents legacy layout rules from overriding the requested grid */
+.ingredientFormV2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}.ingredientFormV2>label.span2{grid-column:1/-1!important}.ingredientFormV2>.ingredientCategory{grid-column:1!important;grid-row:2!important}.ingredientFormV2>.ingredientPrice{grid-column:2!important;grid-row:2!important}.ingredientFormV2>.ingredientQuotation{grid-column:1!important;grid-row:3!important}.ingredientFormV2>.ingredientUnit{grid-column:2!important;grid-row:3!important}.ingredientFormV2>.ingredientCategory select,.ingredientFormV2>.ingredientPrice input,.ingredientFormV2>.ingredientQuotation input,.ingredientFormV2>.ingredientUnit select{width:100%!important;height:56px!important;min-height:56px!important;box-sizing:border-box!important}.ingredientFormV2>.formActions{grid-column:1/-1!important;padding:18px 24px 24px 0!important;margin:0!important}
+@media(max-width:760px){.ingredientFormV2{grid-template-columns:1fr!important}.ingredientFormV2>label,.ingredientFormV2>label.span2,.ingredientFormV2>.ingredientCategory,.ingredientFormV2>.ingredientPrice,.ingredientFormV2>.ingredientQuotation,.ingredientFormV2>.ingredientUnit{grid-column:1!important;grid-row:auto!important}}
