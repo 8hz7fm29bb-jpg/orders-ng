@@ -226,3 +226,6 @@
 
 /* Ingredient editor: four matching fields arranged on two rows */
 .ingredientForm>label:not(.span2)>input,.ingredientForm>label:not(.span2)>select{width:100%;height:56px;min-height:56px;box-sizing:border-box}.ingredientForm>label:not(.span2){min-width:0}.ingredientForm .fieldHint{display:block;margin-top:8px}
+
+/* More breathing room for ingredient modal footer actions */
+.ingredientImpactLayout .formActions{padding-bottom:16px;padding-right:16px}
