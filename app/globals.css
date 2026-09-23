@@ -220,3 +220,6 @@
 
 /* Report Piatti: categoria e porzioni sotto il nome del piatto */
 .productionDishRow .productionCategory{display:flex;gap:10px;margin-top:5px;color:#111;font-weight:400;font-size:.95em}
+
+/* Ingredient quotation: display MMMAA while retaining native month picker */
+.quotationField{position:relative;display:flex;align-items:center}.quotationField>input[type="text"]{width:100%;padding-right:3rem;font-weight:700}.quotationMonthPicker{position:absolute;right:.7rem;width:2rem!important;height:2rem!important;padding:0!important;border:0!important;opacity:.72;background:transparent;cursor:pointer;color:transparent}.quotationMonthPicker::-webkit-datetime-edit{display:none}.quotationMonthPicker::-webkit-calendar-picker-indicator{width:1.5rem;height:1.5rem;cursor:pointer}
