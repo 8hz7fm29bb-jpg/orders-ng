@@ -223,3 +223,6 @@
 
 /* Ingredient quotation: display MMMAA while retaining native month picker */
 .quotationField{position:relative;display:flex;align-items:center}.quotationField>input[type="text"]{width:100%;padding-right:3rem;font-weight:700}.quotationMonthPicker{position:absolute;right:.7rem;width:2rem!important;height:2rem!important;padding:0!important;border:0!important;opacity:.72;background:transparent;cursor:pointer;color:transparent}.quotationMonthPicker::-webkit-datetime-edit{display:none}.quotationMonthPicker::-webkit-calendar-picker-indicator{width:1.5rem;height:1.5rem;cursor:pointer}
+
+/* Ingredient editor: four matching fields arranged on two rows */
+.ingredientForm>label:not(.span2)>input,.ingredientForm>label:not(.span2)>select{width:100%;height:56px;min-height:56px;box-sizing:border-box}.ingredientForm>label:not(.span2){min-width:0}.ingredientForm .fieldHint{display:block;margin-top:8px}
