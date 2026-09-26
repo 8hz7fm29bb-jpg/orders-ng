@@ -236,3 +236,15 @@
 
 /* Ingredient editor V3: Categoria | Unita, Quotazione | Prezzo */
 .ingredientFormV2>.ingredientCategory{grid-column:1!important;grid-row:2!important}.ingredientFormV2>.ingredientUnit{grid-column:2!important;grid-row:2!important}.ingredientFormV2>.ingredientQuotation{grid-column:1!important;grid-row:3!important}.ingredientFormV2>.ingredientPrice{grid-column:2!important;grid-row:3!important}.ingredientFormV2>.ingredientCategory select,.ingredientFormV2>.ingredientUnit select,.ingredientFormV2>.ingredientQuotation input,.ingredientFormV2>.ingredientPrice input{height:56px!important;min-height:56px!important;max-height:56px!important;padding-top:0!important;padding-bottom:0!important}
+
+
+/* Report: quattro indicatori sempre su una sola riga */
+.stats.reportStats{
+  grid-template-columns:repeat(4,minmax(220px,1fr));
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+  padding-bottom:2px;
+}
+.stats.reportStats .stat{min-width:220px}
