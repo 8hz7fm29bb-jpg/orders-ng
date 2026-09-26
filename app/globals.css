@@ -248,3 +248,23 @@
   padding-bottom:2px;
 }
 .stats.reportStats .stat{min-width:220px}
+
+/* iPad / tablet: riquadri report più compatti */
+@media (min-width:768px) and (max-width:1180px){
+  .stats.reportStats{
+    gap:10px;
+    grid-template-columns:repeat(4,minmax(160px,1fr));
+  }
+  .stats.reportStats .stat{
+    min-width:160px;
+    padding:14px;
+    border-radius:14px;
+  }
+  .stats.reportStats .stat span{
+    font-size:11px;
+  }
+  .stats.reportStats .stat strong{
+    font-size:24px;
+    margin-top:6px;
+  }
+}
