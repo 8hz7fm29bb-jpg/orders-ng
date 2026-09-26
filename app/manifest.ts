@@ -7,7 +7,10 @@ export default function manifest(): MetadataRoute.Manifest {
     description: 'Gestionale Officina22',
     start_url: '/',
     display: 'standalone',
-    background_color: '#f3f2ef',
+    background_color: '#171717',
     theme_color: '#171717',
+    icons: [
+      { src: '/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
+    ],
   }
 }
