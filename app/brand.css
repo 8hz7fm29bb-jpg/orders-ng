@@ -10,3 +10,6 @@
 .loginCard h1,.setupCard h1{font-size:0}.loginCard h1::after,.setupCard h1::after{content:'Orders NextGen';font-size:2rem}
 .flow .panelHead h3{font-size:0}
 @media(max-width:980px){.brand .brandMark{width:50px;height:50px;min-width:50px;border-radius:16px}}
+/* Approved Orders icon */
+.brand .brandMark,.loginCard .brandMark,.setupCard .brandMark{background:transparent url(/icons/orders-20261002-512.png) center/contain no-repeat;border-radius:0}
+.brand .brandMark::before,.brand .brandMark::after,.loginCard .brandMark::before,.loginCard .brandMark::after,.setupCard .brandMark::before,.setupCard .brandMark::after{content:none}

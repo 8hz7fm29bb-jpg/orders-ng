@@ -8,10 +8,10 @@ import type { Metadata, Viewport } from 'next'
 export const metadata: Metadata = {
   title: 'Orders NextGen',
   description: 'Gestione eventi, ricette e food cost Officina22',
-  manifest: '/manifest.webmanifest?v=3',
+  manifest: '/manifest.webmanifest?v=20261002',
   icons: {
-    icon: [{ url: '/orders-icon?v=3', type: 'image/png', sizes: '512x512' }],
-    apple: [{ url: '/orders-icon?v=3', type: 'image/png', sizes: '512x512' }],
+    icon: [{ url: '/icons/orders-20261002-512.png', type: 'image/png', sizes: '512x512' }],
+    apple: [{ url: '/icons/orders-20261002-180.png', type: 'image/png', sizes: '180x180' }],
   },
   appleWebApp: { capable: true, title: '22 Orders', statusBarStyle: 'default' },
 }
