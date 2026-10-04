@@ -10,7 +10,6 @@ export function Modal({ title, children, onClose, wide = false }: { title: strin
   const isEvent = eventNumber !== null || title === 'Nuovo evento'
 
   function saveEventAndMenu() {
-    if (eventNumber !== null) window.dispatchEvent(new Event('orders-ng-save-menu'))
     const form = document.getElementById('eventMainForm') as HTMLFormElement | null
     form?.requestSubmit()
   }
