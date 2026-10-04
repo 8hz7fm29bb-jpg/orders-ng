@@ -128,8 +128,8 @@ function createKitchenPdf(e: EventPdfData, adult: EventMenuLine[], baby: EventMe
   let size=11
   let noteLines:string[]=[],nameLines:string[]=[],leftHeight=0,rightHeight=0,notesHeight=0,bodyTop=0
   for(;size>=8;size-=.5){
-    nameLines=wrapped(`#${e.event_number} - ${name}`,95,size,true)
-    bodyTop=53+Math.max(0,nameLines.length-1)*size*.4
+    nameLines=wrapped(`#${e.event_number} - ${name}`,112,size,true)
+    bodyTop=28+Math.max(20,nameLines.length*size*.4+12)+7
     noteLines=e.internal_notes.trim()?wrapped(e.internal_notes,180,size):[]
     notesHeight=13+noteLines.length*size*.4+30
     leftHeight=height(adults,118,size)+14
@@ -140,11 +140,14 @@ function createKitchenPdf(e: EventPdfData, adult: EventMenuLine[], baby: EventMe
   const text=(value:string|string[],x:number,y:number,fontSize=size,bold=false,align:'left'|'right'|'center'='left')=>{doc.setCharSpace(0);doc.setFont('helvetica',bold?'bold':'normal');doc.setFontSize(fontSize);doc.text(value,x,y,{align,lineHeightFactor:1.134})}
   const box=(x:number,y:number,width:number,h:number,fill=246)=>{doc.setDrawColor(195);doc.setFillColor(fill,fill,fill);doc.rect(x,y,width,h,'FD')}
   text('OFFICINA22',10,15,10,true);text('SCHEDA CUCINA',10,25,20,true)
-  doc.setFillColor(249,216,70);doc.rect(102,9,98,Math.max(20,nameLines.length*size*.4+12),'F')
-  text(nameLines,106,15,size,true)
-  text(`${e.event_date.split('-').reverse().join('/')} - ${e.service.toUpperCase()}`,106,19+nameLines.length*size*.4,9,true)
-  const kpiTop=bodyTop-21
-  ;[['ADULTI',e.adults],['BABY',e.baby],['TOTALE',Number(e.adults)+Number(e.baby)]].forEach(([label,value],i)=>{const x=10+i*64.5;box(x,kpiTop,61,16);text(String(label),x+5,kpiTop+6,8,true);text(String(value),x+56,kpiTop+12,18,true,'right')})
+  const headerHeight=Math.max(20,nameLines.length*size*.4+12)
+  doc.setFillColor(249,216,70);doc.rect(10,28,118,headerHeight,'F')
+  text(nameLines,14,34,size,true)
+  const eventDate=new Date(e.event_date+'T12:00:00')
+  const longDate=new Intl.DateTimeFormat('it-IT',{weekday:'long',day:'numeric',month:'long'}).format(eventDate)
+  const service=e.service.charAt(0).toUpperCase()+e.service.slice(1).toLowerCase()
+  text(`${longDate} - ${service}`,14,38+nameLines.length*size*.4,9,true)
+  ;[['ADULTI',e.adults],['BABY',e.baby]].forEach(([label,value],i)=>{const x=134+i*35;box(x,28,31,headerHeight);text(String(label),x+15.5,34,8,true,'center');text(String(value),x+15.5,44,18,true,'center')})
   const section=(title:string,x:number,y:number,width:number)=>{box(x,y,width,9);text(title,x+3,y+6,10,true)}
   const drawGroups=(list:ReturnType<typeof groups>,x:number,y:number,width:number)=>{
     for(const [category,items] of list){const cat=wrapped(category.toUpperCase(),width-8,size,true);text(cat,x+3,y,size,true);y+=cat.length*size*.4+2
