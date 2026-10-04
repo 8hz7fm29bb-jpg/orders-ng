@@ -50,21 +50,28 @@ export async function createEventPdf(request: EventPdfRequest, adult: EventMenuL
   const logoHeight=Math.min(27,65*image.height/image.width)
   const logoWidth=logoHeight*image.width/image.height
   doc.addImage(logo,'PNG',16,13,logoWidth,logoHeight)
-  const headerX=94, headerWidth=100
-  const nameLines=wrap(name,headerWidth,16)
+  const headerX=78, headerWidth=116
+  const nameLines=wrap(name,headerWidth,12)
   const contacts=[client?.phone,client?.email].filter(Boolean).join('  /  ')
   const contactLines=contacts?wrap(contacts,headerWidth,8,'helvetica'):[]
   const headerY=17
   text('PREVENTIVO BANCHETTO',headerX,headerY,8,'helvetica',gold)
-  text(nameLines,headerX,headerY+10,16,'times')
-  let infoY=headerY+10+nameLines.length*6.4
-  text(`riferimento #${e.event_number}`,headerX,infoY,8,'helvetica',gold)
-  infoY+=6
-  const service=e.service.charAt(0).toUpperCase()+e.service.slice(1).toLowerCase()
-  const details=wrap(`${e.event_date.split('-').reverse().join('/')}  /  ${service}  /  ${e.adults} adulti${hasBaby?' + '+e.baby+' baby':''}`,headerWidth,9,'helvetica')
-  text(details,headerX,infoY,9);infoY+=details.length*3.6+2
+  text('riservato a',headerX,headerY+6,9,'times')
+  text(nameLines,headerX,headerY+12,12,'times')
+  let infoY=headerY+12+nameLines.length*4.8
+  text(`riferimento archivio interno #${e.event_number}`,headerX,infoY,8,'helvetica',gold)
+  infoY+=5
   if(contactLines.length){text(contactLines,headerX,infoY,8);infoY+=contactLines.length*3.2+2}
-  infoY=Math.max(infoY,13+logoHeight)+3
+  const service=e.service.charAt(0).toUpperCase()+e.service.slice(1).toLowerCase()
+  const longDate=new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long',year:'numeric'}).format(new Date(e.event_date+'T12:00:00'))
+  const people=`${e.adults} ${e.adults===1?'adulto':'adulti'}${hasBaby?' e '+e.baby+' baby':''}`
+  const detail=`${service} del ${longDate} per ${people}`
+  let detailSize=10
+  doc.setFont('times','normal');doc.setFontSize(detailSize)
+  while(doc.getTextWidth(detail)>178&&detailSize>8){detailSize-=.5;doc.setFontSize(detailSize)}
+  infoY=Math.max(infoY,13+logoHeight)+8
+  text(detail,105-doc.getTextWidth(detail)/2,infoY,detailSize,'times')
+  infoY+=3
   rule(infoY+2)
   const bodyTop=infoY+11, leftWidth=hasBaby||dedicated.length?108:178, rightX=136, rightWidth=58
   const gap=(size:number)=>Math.max(.7,(size-8)*.7+.7)
