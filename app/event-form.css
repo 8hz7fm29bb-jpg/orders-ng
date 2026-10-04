@@ -10,4 +10,9 @@
 .eventDeleteButton:hover{background:#f6dfdc;color:#8f1d14}
 @media(max-width:700px){.eventTopRow,.eventPairRow{grid-template-columns:1fr}.eventClientField select{height:48px;min-height:48px}.eventDeleteArea{margin:16px 22px 22px}}
 
-.eventPriceRow{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.eventPriceRow label{min-width:0}.eventPriceRow input{box-sizing:border-box;width:100%;height:48px;min-height:48px;max-height:48px;border-radius:10px}.eventPriceRow input[readonly]{background:var(--soft);color:var(--ink);font-weight:700}.eventPriceRow .finalPriceField input{color:var(--accent-dark);font-size:16px}@media(max-width:800px){.eventPriceRow{gap:6px}.eventPriceRow label{font-size:10px}.eventPriceRow input{padding:0 5px;font-size:12px}.eventPriceRow .finalPriceField input{font-size:12px}}
+.eventPriceRow{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.eventPriceGroup{min-width:0}.eventPriceGroup h4{font-size:12px;letter-spacing:1.2px;font-weight:700;padding-bottom:10px;margin:0 0 14px;border-bottom:3px solid var(--accent)}
+.eventPriceFields{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:12px}
+.eventPriceRow label{min-width:0;font-size:12px}.eventPriceRow input{box-sizing:border-box;width:100%;height:48px;min-height:48px;max-height:48px;border-radius:10px;padding:0 10px;font-size:16px}
+.eventPriceRow input[readonly]{background:var(--soft);color:var(--ink);font-weight:700}
+@media(max-width:470px){.eventPriceRow{grid-template-columns:1fr;gap:22px}}
