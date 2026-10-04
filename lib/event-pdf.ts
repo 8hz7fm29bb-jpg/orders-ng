@@ -22,7 +22,8 @@ const money = (n: number) => new Intl.NumberFormat('it-IT', {minimumFractionDigi
 const footer = 'ristorante Officina22 made by Vita nei Campi - via M. Marmolada, 5 - 65010 Cavaticchi di Spoltore - Tel. 3452113070'
 
 export async function createEventPdf(request: EventPdfRequest, adult: EventMenuLine[], baby: EventMenuLine[], recipes: MenuRecipeOption[], logo?: string) {
-  const {kind, event: e} = request
+  if(request.kind==='kitchen') return createKitchenPdf(request.event,adult,baby,recipes)
+  const e=request.event; const kind: 'quote' | 'kitchen' = request.kind as 'quote' | 'kitchen'
   const doc = new jsPDF({format: 'a4'})
   const client = e.client
   const name = client?.company_name || [client?.first_name, client?.last_name].filter(Boolean).join(' ') || 'Cliente non assegnato'
@@ -107,4 +108,61 @@ export async function downloadEventPdf(request: EventPdfRequest, adult: EventMen
   }
   const doc=await createEventPdf(request,adult,baby,recipes,logo)
   doc.save(`${request.kind==='quote'?'preventivo':'cucina'}_evento_${request.event.event_number}_${request.event.event_date}.pdf`)
+}
+
+
+function createKitchenPdf(e: EventPdfData, adult: EventMenuLine[], baby: EventMenuLine[], recipes: MenuRecipeOption[]) {
+  const doc=new jsPDF({format:'a4'})
+  const client=e.client
+  const name=client?.company_name || [client?.first_name,client?.last_name].filter(Boolean).join(' ') || 'Cliente non assegnato'
+  const recipeMap=new Map(recipes.map(r=>[r.id,r]))
+  const groups=(items:EventMenuLine[],count:number)=>{
+    const map=new Map<string,{name:string;portions:number}[]>()
+    for(const line of items){const r=recipeMap.get(line.recipe_id);const category=normalizeRecipeCategory(r?.category||line.course_type)||r?.category||line.course_type||'Portate';if(!map.has(category))map.set(category,[]);map.get(category)!.push({name:r?.name||'Portata',portions:line.portions??count})}
+    return [...map.entries()]
+  }
+  const adults=groups(adult,e.adults), babies=groups(baby,e.baby)
+  const dedicated=DEDICATED_MENU_FIELDS.filter(f=>dedicatedMenuCount(e,f.key)>0)
+  const wrapped=(text:string,width:number,size:number,bold=false)=>{doc.setFont('helvetica',bold?'bold':'normal');doc.setFontSize(size);return doc.splitTextToSize(text,width) as string[]}
+  const height=(list:ReturnType<typeof groups>,width:number,size:number)=>list.reduce((h,[category,items])=>h+wrapped(category.toUpperCase(),width-8,size,true).length*size*.4+2+items.reduce((sum,item)=>sum+wrapped(item.name,width-23,size).length*size*.4+3,0)+3,0)
+  let size=11
+  let noteLines:string[]=[],nameLines:string[]=[],leftHeight=0,rightHeight=0,notesHeight=0,bodyTop=0
+  for(;size>=8;size-=.5){
+    nameLines=wrapped(`#${e.event_number} - ${name}`,95,size,true)
+    bodyTop=53+Math.max(0,nameLines.length-1)*size*.4
+    noteLines=e.internal_notes.trim()?wrapped(e.internal_notes,180,size):[]
+    notesHeight=13+noteLines.length*size*.4+30
+    leftHeight=height(adults,118,size)+14
+    rightHeight=(babies.length?height(babies,66,size)+17:0)+(dedicated.length?14+dedicated.length*(size*.4+4):0)
+    if(bodyTop+Math.max(leftHeight,rightHeight)+8+notesHeight<=280)break
+  }
+  if(size<8)throw new Error('La scheda cucina supera lo spazio di una pagina. Riduci la lunghezza delle note o dei nomi delle portate e riprova. Nessun contenuto è stato tagliato.')
+  const text=(value:string|string[],x:number,y:number,fontSize=size,bold=false,align:'left'|'right'|'center'='left')=>{doc.setCharSpace(0);doc.setFont('helvetica',bold?'bold':'normal');doc.setFontSize(fontSize);doc.text(value,x,y,{align,lineHeightFactor:1.134})}
+  const box=(x:number,y:number,width:number,h:number,fill=246)=>{doc.setDrawColor(195);doc.setFillColor(fill,fill,fill);doc.rect(x,y,width,h,'FD')}
+  text('OFFICINA22',10,15,10,true);text('SCHEDA CUCINA',10,25,20,true)
+  doc.setFillColor(249,216,70);doc.rect(102,9,98,Math.max(20,nameLines.length*size*.4+12),'F')
+  text(nameLines,106,15,size,true)
+  text(`${e.event_date.split('-').reverse().join('/')} - ${e.service.toUpperCase()}`,106,19+nameLines.length*size*.4,9,true)
+  const kpiTop=bodyTop-21
+  ;[['ADULTI',e.adults],['BABY',e.baby],['TOTALE',Number(e.adults)+Number(e.baby)]].forEach(([label,value],i)=>{const x=10+i*64.5;box(x,kpiTop,61,16);text(String(label),x+5,kpiTop+6,8,true);text(String(value),x+56,kpiTop+12,18,true,'right')})
+  const section=(title:string,x:number,y:number,width:number)=>{box(x,y,width,9);text(title,x+3,y+6,10,true)}
+  const drawGroups=(list:ReturnType<typeof groups>,x:number,y:number,width:number)=>{
+    for(const [category,items] of list){const cat=wrapped(category.toUpperCase(),width-8,size,true);text(cat,x+3,y,size,true);y+=cat.length*size*.4+2
+      for(const item of items){const name=wrapped(item.name,width-23,size);text(name,x+3,y);text(String(item.portions),x+width-4,y,size+1,true,'right');y+=name.length*size*.4+3}
+      doc.setDrawColor(215);doc.line(x+3,y-1,x+width-3,y-1);y+=3
+    }return y
+  }
+  section('MENU ADULTI',10,bodyTop,118);text('PORZIONI',124,bodyTop+6,8,true,'right')
+  const adultEnd=drawGroups(adults,10,bodyTop+15,118)
+  let rightY=bodyTop
+  if(babies.length){section(`MENU BABY - ${e.baby}`,134,rightY,66);rightY=drawGroups(babies,134,rightY+15,66)+3}
+  if(dedicated.length){doc.setFillColor(255,247,209);doc.setDrawColor(215);doc.rect(134,rightY,66,14+dedicated.length*(size*.4+4),'FD');text('MENU DEDICATI',137,rightY+7,10,true);rightY+=15;for(const f of dedicated){text(f.label,137,rightY);text(String(dedicatedMenuCount(e,f.key)),196,rightY,size+1,true,'right');rightY+=size*.4+4}}
+  const noteTop=Math.max(adultEnd,rightY)+7
+  section('NOTE OPERATIVE',10,noteTop,190)
+  doc.setDrawColor(195);doc.rect(10,noteTop+9,190,notesHeight-9)
+  if(noteLines.length)text(noteLines,15,noteTop+15)
+  const ruledTop=noteTop+15+noteLines.length*size*.4
+  doc.setDrawColor(190);for(let i=1;i<=4;i++)doc.line(15,ruledTop+i*6,195,ruledTop+i*6)
+  text('Orders NextGen - Scheda evento',10,290,7);text('1 / 1',200,290,7,false,'right')
+  return doc
 }
