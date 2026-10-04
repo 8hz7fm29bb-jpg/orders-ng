@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: 'Gestione eventi, ricette e food cost Officina22',
   manifest: '/manifest.webmanifest?v=20261002b',
   icons: {
-    icon: [{ url: '/icons/orders-20261002b-512.png', type: 'image/png', sizes: '512x512' }],
+    icon: [{ url: '/safari-icon?v=20261004', type: 'image/svg+xml', sizes: 'any' }],
     apple: [{ url: '/icons/orders-20261002b-180.png', type: 'image/png', sizes: '180x180' }],
   },
   appleWebApp: { capable: true, title: '22 Orders', statusBarStyle: 'default' },
