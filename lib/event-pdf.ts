@@ -128,11 +128,11 @@ function createKitchenPdf(e: EventPdfData, adult: EventMenuLine[], baby: EventMe
   const dedicated=DEDICATED_MENU_FIELDS.filter(f=>dedicatedMenuCount(e,f.key)>0)
   const wrapped=(text:string,width:number,size:number,bold=false)=>{doc.setFont('helvetica',bold?'bold':'normal');doc.setFontSize(size);return doc.splitTextToSize(text,width) as string[]}
   const gapFor=(size:number)=>Math.max(.6,(size-8)*.8+.6)
-  const height=(list:ReturnType<typeof groups>,width:number,size:number)=>list.reduce((h,[category,items])=>h+wrapped(category.toUpperCase(),width-8,size,true).length*size*.4+gapFor(size)+items.reduce((sum,item)=>sum+wrapped(item.name,width-23,size).length*size*.4+gapFor(size),0)+gapFor(size),0)
+  const height=(list:ReturnType<typeof groups>,width:number,size:number)=>list.reduce((h,[category,items])=>h+wrapped(category.toUpperCase(),width-8,size,true).length*size*.4+gapFor(size)+items.reduce((sum,item)=>sum+wrapped(item.name,width-23,size).length*size*.4+gapFor(size),0)+gapFor(size)+size*.3,0)
   let size=11
   let noteLines:string[]=[],nameLines:string[]=[],leftHeight=0,rightHeight=0,notesHeight=0,bodyTop=0
   for(;size>=8;size-=.5){
-    nameLines=wrapped(`#${e.event_number} - ${name}`,112,size,true)
+    nameLines=wrapped(`${name} - #${e.event_number}`,112,size,true)
     bodyTop=28+Math.max(20,nameLines.length*size*.4+12)+7
     noteLines=e.internal_notes.trim()?wrapped(e.internal_notes,180,size):[]
     notesHeight=13+noteLines.length*size*.4+30
@@ -156,7 +156,7 @@ function createKitchenPdf(e: EventPdfData, adult: EventMenuLine[], baby: EventMe
   const drawGroups=(list:ReturnType<typeof groups>,x:number,y:number,width:number)=>{
     for(const [category,items] of list){const cat=wrapped(category.toUpperCase(),width-8,size,true);text(cat,x+3,y,size,true);y+=cat.length*size*.4+gapFor(size)
       for(const item of items){const name=wrapped(item.name,width-23,size);text(name,x+3,y);text(String(item.portions),x+width-4,y,size+1,true,'right');y+=name.length*size*.4+gapFor(size)}
-      doc.setDrawColor(215);doc.line(x+3,y-.3,x+width-3,y-.3);y+=gapFor(size)
+      doc.setDrawColor(215);doc.line(x+3,y-.3,x+width-3,y-.3);y+=gapFor(size)+size*.3
     }return y
   }
   section('MENU ADULTI',10,bodyTop,118);text('PORZIONI',124,bodyTop+6,8,true,'right')
