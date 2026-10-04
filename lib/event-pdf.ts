@@ -124,7 +124,8 @@ function createKitchenPdf(e: EventPdfData, adult: EventMenuLine[], baby: EventMe
   const adults=groups(adult,e.adults), babies=groups(baby,e.baby)
   const dedicated=DEDICATED_MENU_FIELDS.filter(f=>dedicatedMenuCount(e,f.key)>0)
   const wrapped=(text:string,width:number,size:number,bold=false)=>{doc.setFont('helvetica',bold?'bold':'normal');doc.setFontSize(size);return doc.splitTextToSize(text,width) as string[]}
-  const height=(list:ReturnType<typeof groups>,width:number,size:number)=>list.reduce((h,[category,items])=>h+wrapped(category.toUpperCase(),width-8,size,true).length*size*.4+2+items.reduce((sum,item)=>sum+wrapped(item.name,width-23,size).length*size*.4+3,0)+3,0)
+  const gapFor=(size:number)=>Math.max(.6,(size-8)*.8+.6)
+  const height=(list:ReturnType<typeof groups>,width:number,size:number)=>list.reduce((h,[category,items])=>h+wrapped(category.toUpperCase(),width-8,size,true).length*size*.4+gapFor(size)+items.reduce((sum,item)=>sum+wrapped(item.name,width-23,size).length*size*.4+gapFor(size),0)+gapFor(size),0)
   let size=11
   let noteLines:string[]=[],nameLines:string[]=[],leftHeight=0,rightHeight=0,notesHeight=0,bodyTop=0
   for(;size>=8;size-=.5){
@@ -150,9 +151,9 @@ function createKitchenPdf(e: EventPdfData, adult: EventMenuLine[], baby: EventMe
   ;[['ADULTI',e.adults],['BABY',e.baby]].forEach(([label,value],i)=>{const x=134+i*35;box(x,28,31,headerHeight);text(String(label),x+15.5,34,8,true,'center');text(String(value),x+15.5,44,18,true,'center')})
   const section=(title:string,x:number,y:number,width:number)=>{box(x,y,width,9);text(title,x+3,y+6,10,true)}
   const drawGroups=(list:ReturnType<typeof groups>,x:number,y:number,width:number)=>{
-    for(const [category,items] of list){const cat=wrapped(category.toUpperCase(),width-8,size,true);text(cat,x+3,y,size,true);y+=cat.length*size*.4+2
-      for(const item of items){const name=wrapped(item.name,width-23,size);text(name,x+3,y);text(String(item.portions),x+width-4,y,size+1,true,'right');y+=name.length*size*.4+3}
-      doc.setDrawColor(215);doc.line(x+3,y-1,x+width-3,y-1);y+=3
+    for(const [category,items] of list){const cat=wrapped(category.toUpperCase(),width-8,size,true);text(cat,x+3,y,size,true);y+=cat.length*size*.4+gapFor(size)
+      for(const item of items){const name=wrapped(item.name,width-23,size);text(name,x+3,y);text(String(item.portions),x+width-4,y,size+1,true,'right');y+=name.length*size*.4+gapFor(size)}
+      doc.setDrawColor(215);doc.line(x+3,y-.3,x+width-3,y-.3);y+=gapFor(size)
     }return y
   }
   section('MENU ADULTI',10,bodyTop,118);text('PORZIONI',124,bodyTop+6,8,true,'right')
