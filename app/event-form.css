@@ -23,3 +23,5 @@
 @media(max-width:900px){.eventPriceRow{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}.eventDedicatedGroup{grid-column:1/-1}.eventDedicatedFields{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:620px){.eventPriceRow{grid-template-columns:1fr}.eventDedicatedGroup{grid-column:auto}.eventDedicatedFields{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media print{.dedicatedReportSummary{margin:6mm 0 0!important}.dedicatedReportSummary h4{break-after:avoid;font-size:10pt}.dedicatedReportTable th,.dedicatedReportTable td{padding:2mm!important;font-size:8pt!important;overflow-wrap:anywhere}.dedicatedReportTable th:first-child{width:31%}.dedicatedReportTable th:nth-child(2){width:16%}.dedicatedReportTable thead{display:table-header-group}.dedicatedReportTable tfoot{display:table-row-group}}
+
+.eventPdfActions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px}.eventPdfActions small{flex-basis:100%;color:var(--muted)}
