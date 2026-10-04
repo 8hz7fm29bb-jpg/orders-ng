@@ -20,9 +20,10 @@ export function EventMenuEditor({eventNumber}:{eventNumber:number}){
  setAdultLines(a.lines.map(l=>({...l,portions:l.portions??adultCount})))
  setBabyLines(b.lines.map(l=>({...l,portions:l.portions??babyCount})))
  if(a.error||b.error){setLoadError(a.error||b.error||'');setMessage(a.error||b.error||'')}setLoading(false)})();return()=>{cancelled=true}},[eventNumber])
+ const roundUpHalfEuro=(price:number)=>Math.max(0,Math.ceil(price*2-1e-9)/2)
  const priceFor=(lines:EventMenuLine[],count:number)=>count>0?lines.reduce((sum,l)=>sum+(recipes.find(r=>r.id===l.recipe_id)?.sale_price??l.sale_price??0)*Number(l.portions??count),0)/count:0
- const adultTotal=useMemo(()=>priceFor(adultLines,adults),[adultLines,recipes,adults])
- const babyTotal=useMemo(()=>priceFor(babyLines,baby),[babyLines,recipes,baby])
+ const adultTotal=useMemo(()=>roundUpHalfEuro(priceFor(adultLines,adults)),[adultLines,recipes,adults])
+ const babyTotal=useMemo(()=>roundUpHalfEuro(priceFor(babyLines,baby)),[babyLines,recipes,baby])
  useEffect(()=>{if(!loading&&!loadError)window.dispatchEvent(new CustomEvent('orders-ng-menu-prices',{detail:{adult:adultTotal,baby:babyTotal}}))},[adultTotal,babyTotal,loading,loadError])
  function linesFor(a:Audience){return a==='adult'?adultLines:babyLines}
  function setFor(a:Audience,v:EventMenuLine[]){a==='adult'?setAdultLines(v):setBabyLines(v)}
