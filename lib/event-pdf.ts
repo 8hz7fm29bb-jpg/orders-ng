@@ -143,7 +143,7 @@ function createKitchenPdf(e: EventPdfData, adult: EventMenuLine[], baby: EventMe
   if(size<8)throw new Error('La scheda cucina supera lo spazio di una pagina. Riduci la lunghezza delle note o dei nomi delle portate e riprova. Nessun contenuto è stato tagliato.')
   const text=(value:string|string[],x:number,y:number,fontSize=size,bold=false,align:'left'|'right'|'center'='left')=>{doc.setCharSpace(0);doc.setFont('helvetica',bold?'bold':'normal');doc.setFontSize(fontSize);doc.text(value,x,y,{align,lineHeightFactor:1.134})}
   const box=(x:number,y:number,width:number,h:number,fill=246)=>{doc.setDrawColor(195);doc.setFillColor(fill,fill,fill);doc.rect(x,y,width,h,'FD')}
-  text('OFFICINA22',10,15,13,true);text('SCHEDA CUCINA',200,15,17,true,'right')
+  text('OFFICINA22',10,15,13);text('SCHEDA EVENTO',200,15,13,false,'right')
   const headerHeight=Math.max(20,nameLines.length*size*.4+12)
   doc.setFillColor(249,216,70);doc.rect(10,21,118,headerHeight,'F')
   text(nameLines,14,27,size,true)
@@ -155,7 +155,7 @@ function createKitchenPdf(e: EventPdfData, adult: EventMenuLine[], baby: EventMe
   const section=(title:string,x:number,y:number,width:number)=>{box(x,y,width,9);text(title,x+3,y+6,10,true)}
   const drawGroups=(list:ReturnType<typeof groups>,x:number,y:number,width:number)=>{
     for(const [category,items] of list){const cat=wrapped(category.toUpperCase(),width-8,size,true);text(cat,x+3,y,size,true);y+=cat.length*size*.4+gapFor(size)
-      for(const item of items){const name=wrapped(item.name,width-23,size);text(name,x+3,y);text(String(item.portions),x+width-4,y,size+1,true,'right');y+=name.length*size*.4+gapFor(size)}
+      for(const item of items){const name=wrapped(item.name,width-23,size);text(name,x+3,y);text(String(item.portions),x+width-4,y,size+1,false,'right');y+=name.length*size*.4+gapFor(size)}
       doc.setDrawColor(215);doc.line(x+3,y-.3,x+width-3,y-.3);y+=gapFor(size)+size*.3
     }return y
   }
