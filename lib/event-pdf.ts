@@ -9,7 +9,7 @@ export type EventPdfData = DedicatedMenuCounts & {
   price_per_adult: number; price_per_baby: number; internal_notes: string;
   client?: { company_name?: string | null; first_name?: string | null; last_name?: string | null; phone?: string | null; email?: string | null } | null
 }
-export type EventPdfRequest = { kind: 'quote' | 'kitchen'; event: EventPdfData }
+export type EventPdfRequest = { kind: 'quote' | 'kitchen'; event: EventPdfData; preview?: Window | null }
 const conditions = [
   'Il menu è comprensivo di coperto, acqua, pane e caffè. Vini e amari come dettagliato nel punto seguente.',
   'Vino in ragione di 1 bottiglia ogni 3 persone, il resto sarà contabilizzato come da carta dei vini. Amari in ragione di 1 a persona.',
@@ -107,7 +107,7 @@ export async function downloadEventPdf(request: EventPdfRequest, adult: EventMen
     logo=await new Promise<string>((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result));reader.onerror=()=>reject(new Error('Impossibile leggere il logo.'));reader.readAsDataURL(blob)})
   }
   const doc=await createEventPdf(request,adult,baby,recipes,logo)
-  doc.save(`${request.kind==='quote'?'preventivo':'cucina'}_evento_${request.event.event_number}_${request.event.event_date}.pdf`)
+  if(request.preview && !request.preview.closed){const url=URL.createObjectURL(doc.output('blob'));request.preview.location.replace(url);setTimeout(()=>URL.revokeObjectURL(url),300000)}else{doc.save(`${request.kind==='quote'?'preventivo':'cucina'}_evento_${request.event.event_number}_${request.event.event_date}.pdf`)}
 }
 
 
