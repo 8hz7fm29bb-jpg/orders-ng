@@ -107,7 +107,10 @@ export async function downloadEventPdf(request: EventPdfRequest, adult: EventMen
     logo=await new Promise<string>((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result));reader.onerror=()=>reject(new Error('Impossibile leggere il logo.'));reader.readAsDataURL(blob)})
   }
   const doc=await createEventPdf(request,adult,baby,recipes,logo)
-  if(request.preview && !request.preview.closed){const url=URL.createObjectURL(doc.output('blob'));request.preview.location.replace(url);setTimeout(()=>URL.revokeObjectURL(url),300000)}else{doc.save(`${request.kind==='quote'?'preventivo':'cucina'}_evento_${request.event.event_number}_${request.event.event_date}.pdf`)}
+  const filename=`${request.kind==='quote'?'preventivo':'cucina'}_evento_${request.event.event_number}_${request.event.event_date}.pdf`
+  const url=URL.createObjectURL(doc.output('blob'))
+  if(request.preview && !request.preview.closed){try{request.preview.location.replace(url)}catch{/* The inline preview remains available when a standalone app blocks navigation. */}}
+  return {url,filename}
 }
 
 
