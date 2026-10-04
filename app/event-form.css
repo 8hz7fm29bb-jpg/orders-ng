@@ -10,9 +10,16 @@
 .eventDeleteButton:hover{background:#f6dfdc;color:#8f1d14}
 @media(max-width:700px){.eventTopRow,.eventPairRow{grid-template-columns:1fr}.eventClientField select{height:48px;min-height:48px}.eventDeleteArea{margin:16px 22px 22px}}
 
-.eventPriceRow{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.eventPriceRow{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
 .eventPriceGroup{min-width:0}.eventPriceGroup h4{font-size:12px;letter-spacing:1.2px;font-weight:700;padding-bottom:10px;margin:0 0 14px;border-bottom:3px solid var(--accent)}
-.eventPriceFields{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr) minmax(0,1fr);gap:10px}
+.eventPriceFields{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:10px}
 .eventPriceRow label{min-width:0;font-size:12px}.eventPriceRow input{box-sizing:border-box;width:100%;height:48px;min-height:48px;max-height:48px;border-radius:10px;padding:0 10px;font-size:16px}
 .eventPriceRow input[readonly]{background:var(--soft);color:var(--ink);font-weight:700}
-@media(max-width:620px){.eventPriceRow{grid-template-columns:1fr;gap:22px}}
+.eventDedicatedFields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.eventDedicatedFields select{width:100%;height:48px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);padding:0 10px;font-size:16px}
+.dedicatedReportSummary{margin:24px 20px 20px;border-top:3px solid var(--accent);padding-top:14px}
+.dedicatedReportSummary h4{margin:0 0 12px;font-size:12px;letter-spacing:1.2px}
+.dedicatedReportTable tfoot th{background:var(--soft);font-weight:700}
+@media(max-width:900px){.eventPriceRow{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}.eventDedicatedGroup{grid-column:1/-1}.eventDedicatedFields{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:620px){.eventPriceRow{grid-template-columns:1fr}.eventDedicatedGroup{grid-column:auto}.eventDedicatedFields{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media print{.dedicatedReportSummary{margin:6mm 0 0!important}.dedicatedReportSummary h4{break-after:avoid;font-size:10pt}.dedicatedReportTable th,.dedicatedReportTable td{padding:2mm!important;font-size:8pt!important;overflow-wrap:anywhere}.dedicatedReportTable th:first-child{width:31%}.dedicatedReportTable th:nth-child(2){width:16%}.dedicatedReportTable thead{display:table-header-group}.dedicatedReportTable tfoot{display:table-row-group}}
