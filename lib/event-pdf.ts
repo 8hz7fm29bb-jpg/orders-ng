@@ -133,7 +133,7 @@ function createKitchenPdf(e: EventPdfData, adult: EventMenuLine[], baby: EventMe
   let noteLines:string[]=[],nameLines:string[]=[],leftHeight=0,rightHeight=0,notesHeight=0,bodyTop=0
   for(;size>=8;size-=.5){
     nameLines=wrapped(`${name} - #${e.event_number}`,112,size,true)
-    bodyTop=28+Math.max(20,nameLines.length*size*.4+12)+7
+    bodyTop=21+Math.max(20,nameLines.length*size*.4+12)+7
     noteLines=e.internal_notes.trim()?wrapped(e.internal_notes,180,size):[]
     notesHeight=13+noteLines.length*size*.4+30
     leftHeight=height(adults,118,size)+14
@@ -143,15 +143,15 @@ function createKitchenPdf(e: EventPdfData, adult: EventMenuLine[], baby: EventMe
   if(size<8)throw new Error('La scheda cucina supera lo spazio di una pagina. Riduci la lunghezza delle note o dei nomi delle portate e riprova. Nessun contenuto è stato tagliato.')
   const text=(value:string|string[],x:number,y:number,fontSize=size,bold=false,align:'left'|'right'|'center'='left')=>{doc.setCharSpace(0);doc.setFont('helvetica',bold?'bold':'normal');doc.setFontSize(fontSize);doc.text(value,x,y,{align,lineHeightFactor:1.134})}
   const box=(x:number,y:number,width:number,h:number,fill=246)=>{doc.setDrawColor(195);doc.setFillColor(fill,fill,fill);doc.rect(x,y,width,h,'FD')}
-  text('OFFICINA22',10,15,10,true);text('SCHEDA CUCINA',10,25,20,true)
+  text('OFFICINA22',10,15,13,true);text('SCHEDA CUCINA',200,15,17,true,'right')
   const headerHeight=Math.max(20,nameLines.length*size*.4+12)
-  doc.setFillColor(249,216,70);doc.rect(10,28,118,headerHeight,'F')
-  text(nameLines,14,34,size,true)
+  doc.setFillColor(249,216,70);doc.rect(10,21,118,headerHeight,'F')
+  text(nameLines,14,27,size,true)
   const eventDate=new Date(e.event_date+'T12:00:00')
   const longDate=new Intl.DateTimeFormat('it-IT',{weekday:'long',day:'numeric',month:'long'}).format(eventDate)
   const service=e.service.charAt(0).toUpperCase()+e.service.slice(1).toLowerCase()
-  text(`${longDate} - ${service}`,14,38+nameLines.length*size*.4,9,true)
-  ;[['ADULTI',e.adults],['BABY',e.baby]].forEach(([label,value],i)=>{const x=134+i*35;box(x,28,31,headerHeight);text(String(label),x+15.5,34,8,true,'center');text(String(value),x+15.5,44,18,true,'center')})
+  text(`${longDate} - ${service}`,14,31+nameLines.length*size*.4,9,true)
+  ;[['ADULTI',e.adults],['BABY',e.baby]].forEach(([label,value],i)=>{const x=134+i*35;box(x,21,31,headerHeight);text(String(label),x+15.5,27,8,true,'center');text(String(value),x+15.5,37,18,true,'center')})
   const section=(title:string,x:number,y:number,width:number)=>{box(x,y,width,9);text(title,x+3,y+6,10,true)}
   const drawGroups=(list:ReturnType<typeof groups>,x:number,y:number,width:number)=>{
     for(const [category,items] of list){const cat=wrapped(category.toUpperCase(),width-8,size,true);text(cat,x+3,y,size,true);y+=cat.length*size*.4+gapFor(size)
