@@ -55,10 +55,9 @@ export async function createEventPdf(request: EventPdfRequest, adult: EventMenuL
   const headerRule=(y:number)=>{doc.setDrawColor(...gold);doc.setLineWidth(.2);doc.line(headerX,y,194,y)}
   headerRule(12)
   const headerY=18
-  text('PREVENTIVO BANCHETTO',headerX,headerY,7,'helvetica',gold)
-  text('riservato a',headerX,headerY+6,9,'times')
-  text(nameLines,headerX,headerY+12,12,'times')
-  let infoY=headerY+12+nameLines.length*4.8
+  text('offerta riservata a',headerX,headerY,9,'times')
+  text(nameLines,headerX,headerY+6,12,'times')
+  let infoY=headerY+6+nameLines.length*4.8
   if(client?.phone){
     const phoneLines=wrap('phone '+client.phone,headerWidth,8,'helvetica')
     text(phoneLines,headerX,infoY,8);infoY+=phoneLines.length*3.2+2
@@ -68,9 +67,9 @@ export async function createEventPdf(request: EventPdfRequest, adult: EventMenuL
   if(client?.email){const emailLines=wrap(client.email,headerWidth,8,'helvetica');text(emailLines,headerX,infoY,8);infoY+=emailLines.length*3.2+2}
   headerRule(infoY+1)
   infoY+=3
-  const service=e.service.charAt(0).toUpperCase()+e.service.slice(1).toLowerCase()
-  const longDate=new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long'}).format(new Date(e.event_date+'T12:00:00'))
-  const detail=`${service} del ${longDate}, ospiti ${e.adults}${hasBaby?' e '+e.baby+' baby':''}`
+  const service=e.service.toLowerCase()
+  const longDate=new Intl.DateTimeFormat('it-IT',{weekday:'long',day:'numeric',month:'long'}).format(new Date(e.event_date+'T12:00:00'))
+  const detail=`Preventivo banchetto - ${service} di ${longDate}, ospiti ${e.adults}${hasBaby?' e '+e.baby+' baby':''}`
   let detailSize=10
   doc.setFont('times','normal');doc.setFontSize(detailSize)
   while(doc.getTextWidth(detail)>178&&detailSize>8){detailSize-=.5;doc.setFontSize(detailSize)}
