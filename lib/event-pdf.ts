@@ -50,19 +50,21 @@ export async function createEventPdf(request: EventPdfRequest, adult: EventMenuL
   const logoHeight=Math.min(27,65*image.height/image.width)
   const logoWidth=logoHeight*image.width/image.height
   doc.addImage(logo,'PNG',16,13,logoWidth,logoHeight)
-  const nameLines=wrap(name,178,16)
+  const headerX=94, headerWidth=100
+  const nameLines=wrap(name,headerWidth,16)
   const contacts=[client?.phone,client?.email].filter(Boolean).join('  /  ')
-  const contactLines=contacts?wrap(contacts,178,8,'helvetica'):[]
-  const headerY=13+logoHeight+9
-  text('PREVENTIVO BANCHETTO',16,headerY,8,'helvetica',gold)
-  text(nameLines,16,headerY+10,16,'times')
+  const contactLines=contacts?wrap(contacts,headerWidth,8,'helvetica'):[]
+  const headerY=17
+  text('PREVENTIVO BANCHETTO',headerX,headerY,8,'helvetica',gold)
+  text(nameLines,headerX,headerY+10,16,'times')
   let infoY=headerY+10+nameLines.length*6.4
-  text(`riferimento #${e.event_number}`,16,infoY,8,'helvetica',gold)
+  text(`riferimento #${e.event_number}`,headerX,infoY,8,'helvetica',gold)
   infoY+=6
   const service=e.service.charAt(0).toUpperCase()+e.service.slice(1).toLowerCase()
-  const details=wrap(`${e.event_date.split('-').reverse().join('/')}  /  ${service}  /  ${e.adults} adulti${hasBaby?' + '+e.baby+' baby':''}`,178,9,'helvetica')
-  text(details,16,infoY,9);infoY+=details.length*3.6+2
-  if(contactLines.length){text(contactLines,16,infoY,8);infoY+=contactLines.length*3.2+2}
+  const details=wrap(`${e.event_date.split('-').reverse().join('/')}  /  ${service}  /  ${e.adults} adulti${hasBaby?' + '+e.baby+' baby':''}`,headerWidth,9,'helvetica')
+  text(details,headerX,infoY,9);infoY+=details.length*3.6+2
+  if(contactLines.length){text(contactLines,headerX,infoY,8);infoY+=contactLines.length*3.2+2}
+  infoY=Math.max(infoY,13+logoHeight)+3
   rule(infoY+2)
   const bodyTop=infoY+11, leftWidth=hasBaby||dedicated.length?108:178, rightX=136, rightWidth=58
   const gap=(size:number)=>Math.max(.7,(size-8)*.7+.7)
