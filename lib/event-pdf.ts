@@ -50,22 +50,23 @@ export async function createEventPdf(request: EventPdfRequest, adult: EventMenuL
   const logoHeight=Math.min(27,65*image.height/image.width)
   const logoWidth=logoHeight*image.width/image.height
   doc.addImage(logo,'PNG',16,13,logoWidth,logoHeight)
-  const headerX=78, headerWidth=116
+  const headerX=110, headerWidth=84
   const nameLines=wrap(name,headerWidth,12)
-  const contacts=[client?.phone,client?.email].filter(Boolean).join('  /  ')
-  const contactLines=contacts?wrap(contacts,headerWidth,8,'helvetica'):[]
   const headerY=17
-  text('PREVENTIVO BANCHETTO',headerX,headerY,8,'helvetica',gold)
+  text('PREVENTIVO BANCHETTO',headerX,headerY,7,'helvetica',gold)
   text('riservato a',headerX,headerY+6,9,'times')
   text(nameLines,headerX,headerY+12,12,'times')
   let infoY=headerY+12+nameLines.length*4.8
+  if(client?.phone){
+    const phoneLines=wrap('phone '+client.phone,headerWidth,8,'helvetica')
+    text(phoneLines,headerX,infoY,8);infoY+=phoneLines.length*3.2+2
+  }
   text(`riferimento archivio interno #${e.event_number}`,headerX,infoY,8,'helvetica',gold)
   infoY+=5
-  if(contactLines.length){text(contactLines,headerX,infoY,8);infoY+=contactLines.length*3.2+2}
+  if(client?.email){const emailLines=wrap(client.email,headerWidth,8,'helvetica');text(emailLines,headerX,infoY,8);infoY+=emailLines.length*3.2+2}
   const service=e.service.charAt(0).toUpperCase()+e.service.slice(1).toLowerCase()
-  const longDate=new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long',year:'numeric'}).format(new Date(e.event_date+'T12:00:00'))
-  const people=`${e.adults} ${e.adults===1?'adulto':'adulti'}${hasBaby?' e '+e.baby+' baby':''}`
-  const detail=`${service} del ${longDate} per ${people}`
+  const longDate=new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long'}).format(new Date(e.event_date+'T12:00:00'))
+  const detail=`${service} del ${longDate}, ospiti ${e.adults}${hasBaby?' e '+e.baby+' baby':''}`
   let detailSize=10
   doc.setFont('times','normal');doc.setFontSize(detailSize)
   while(doc.getTextWidth(detail)>178&&detailSize>8){detailSize-=.5;doc.setFontSize(detailSize)}
@@ -103,8 +104,8 @@ export async function createEventPdf(request: EventPdfRequest, adult: EventMenuL
   }
   const priceY=Math.max(leftEnd,rightEnd)+5
   rule(priceY);text('PREZZO PER PERSONA',16,priceY+7,8,'helvetica',gold)
-  text(`Adulti  € ${money(e.price_per_adult)}`,16,priceY+16,15,'times')
-  if(hasBaby)text(`Baby  € ${money(e.price_per_baby)}`,rightX,priceY+16,15,'times')
+  text(`Adulti  € ${money(e.price_per_adult)}`,16,priceY+14,11,'times')
+  if(hasBaby)text(`Baby  € ${money(e.price_per_baby)}`,rightX,priceY+14,11,'times')
   // Fixed bottom placement, independent of the menu length.
   rule(conditionsTop-3)
   text('CONDIZIONI DEL PREVENTIVO',16,conditionsTop+1,8,'helvetica',gold)
