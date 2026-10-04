@@ -58,13 +58,13 @@ export async function createEventPdf(request: EventPdfRequest, adult: EventMenuL
   text('offerta riservata a',headerX,headerY,9,'times')
   text(nameLines,headerX,headerY+6,12,'times')
   let infoY=headerY+6+nameLines.length*4.8
-  if(client?.phone){
-    const phoneLines=wrap('phone '+client.phone,headerWidth,8,'helvetica')
+  const phone=client?.phone?.trim(), email=client?.email?.trim()
+  if(phone||email){
+    const phoneLines=wrap(phone?'phone '+phone:'mail '+email,headerWidth,8,'helvetica')
     text(phoneLines,headerX,infoY,8);infoY+=phoneLines.length*3.2+2
   }
   text(`riferimento archivio interno #${e.event_number}`,headerX,infoY,8,'helvetica',gold)
   infoY+=5
-  if(client?.email){const emailLines=wrap(client.email,headerWidth,8,'helvetica');text(emailLines,headerX,infoY,8);infoY+=emailLines.length*3.2+2}
   headerRule(infoY+1)
   infoY+=3
   const service=e.service.toLowerCase()
