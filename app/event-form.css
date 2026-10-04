@@ -12,7 +12,7 @@
 
 .eventPriceRow{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
 .eventPriceGroup{min-width:0}.eventPriceGroup h4{font-size:12px;letter-spacing:1.2px;font-weight:700;padding-bottom:10px;margin:0 0 14px;border-bottom:3px solid var(--accent)}
-.eventPriceFields{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:12px}
+.eventPriceFields{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr) minmax(0,1fr);gap:10px}
 .eventPriceRow label{min-width:0;font-size:12px}.eventPriceRow input{box-sizing:border-box;width:100%;height:48px;min-height:48px;max-height:48px;border-radius:10px;padding:0 10px;font-size:16px}
 .eventPriceRow input[readonly]{background:var(--soft);color:var(--ink);font-weight:700}
-@media(max-width:470px){.eventPriceRow{grid-template-columns:1fr;gap:22px}}
+@media(max-width:620px){.eventPriceRow{grid-template-columns:1fr;gap:22px}}
