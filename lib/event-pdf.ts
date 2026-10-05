@@ -50,7 +50,7 @@ export async function createEventPdf(request: EventPdfRequest, adult: EventMenuL
   const logoHeight=Math.min(27,65*image.height/image.width)
   const logoWidth=logoHeight*image.width/image.height
   doc.addImage(logo,'PNG',16,13,logoWidth,logoHeight)
-  const headerX=116, headerWidth=72
+  const headerX=128, headerWidth=72
   const nameLines=wrap(name,headerWidth,12)
   const headerRule=(y:number)=>{doc.setDrawColor(...gold);doc.setLineWidth(.2);doc.line(headerX,y,headerX+headerWidth,y)}
   headerRule(12)
@@ -77,7 +77,7 @@ export async function createEventPdf(request: EventPdfRequest, adult: EventMenuL
   text(detail,105-doc.getTextWidth(detail)/2,infoY,detailSize,'times')
   infoY+=3
   rule(infoY+2)
-  const bodyTop=infoY+11, leftWidth=hasBaby||dedicated.length?108:178, rightX=130, rightWidth=58
+  const bodyTop=infoY+11, leftWidth=hasBaby||dedicated.length?108:178, rightX=142, rightWidth=58
   const gap=(size:number)=>Math.max(.7,(size-8)*.7+.7)
   const groupHeight=(list:ReturnType<typeof groups>,width:number,size:number)=>list.reduce((h,[category,items])=>h+wrap(category.toUpperCase(),width,8,'helvetica').length*3.2+2+items.reduce((n,item)=>n+wrap(item,width,size).length*size*.4+gap(size),0)+gap(size)+3,0)
   let size=11
