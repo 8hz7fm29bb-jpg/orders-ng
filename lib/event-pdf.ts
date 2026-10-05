@@ -52,7 +52,7 @@ export async function createEventPdf(request: EventPdfRequest, adult: EventMenuL
   doc.addImage(logo,'PNG',16,13,logoWidth,logoHeight)
   const headerX=128, headerWidth=72
   const nameLines=wrap(name,headerWidth,12)
-  const headerRule=(y:number)=>{doc.setDrawColor(...gold);doc.setLineWidth(.2);doc.line(headerX,y,headerX+headerWidth,y)}
+  const headerRule=(y:number)=>{doc.setDrawColor(...gold);doc.setLineWidth(.2);doc.line(headerX,y,194,y)}
   headerRule(12)
   const headerY=18
   text('offerta riservata a',headerX,headerY,9,'times')
