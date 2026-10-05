@@ -268,3 +268,16 @@
     margin-top:6px;
   }
 }
+
+/* Smartphone: date affiancate e un solo indicatore del report. */
+@media screen and (max-width:767px){
+  .toolbar:has(>.reportDates){flex-direction:column;align-items:stretch}
+  .reportDates{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;width:100%;min-width:0}
+  .reportDates label{display:flex;flex-direction:column;align-items:stretch;gap:8px;min-width:0;white-space:normal;font-size:13px}
+  .reportDates input[type="date"]{display:block;width:100%;max-width:100%;min-width:0;height:48px;margin:0;padding:10px 8px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);font-size:16px;box-sizing:border-box;-webkit-appearance:none;appearance:none}
+  .reportDates input[type="date"]::-webkit-date-and-time-value{text-align:left;min-width:0}
+  .reportDates input[type="date"]:focus{outline:2px solid var(--accent);outline-offset:1px}
+  .stats.reportStats{grid-template-columns:minmax(0,1fr);overflow:visible;padding-bottom:0}
+  .stats.reportStats .stat{min-width:0}
+  .stats.reportStats .stat:not(:first-child){display:none}
+}
