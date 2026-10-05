@@ -281,3 +281,8 @@
   .stats.reportStats .stat{min-width:0}
   .stats.reportStats .stat:not(:first-child){display:none}
 }
+
+/* Smartphone: condivisione PDF tramite Stampa; mantieni Excel e Stampa. */
+@media screen and (max-width:767px){
+  .reportExportActions>button:nth-child(2):not(:last-child){display:none}
+}
