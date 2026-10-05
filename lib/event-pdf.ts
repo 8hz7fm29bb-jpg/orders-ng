@@ -67,7 +67,7 @@ export async function createEventPdf(request: EventPdfRequest, adult: EventMenuL
   infoY+=5
   headerRule(infoY+1)
   infoY+=3
-  const service=e.service.toLowerCase()
+  const service=e.service.charAt(0).toLocaleUpperCase('it-IT')+e.service.slice(1).toLocaleLowerCase('it-IT')
   const longDate=new Intl.DateTimeFormat('it-IT',{weekday:'long',day:'numeric',month:'long'}).format(new Date(e.event_date+'T12:00:00'))
   const detail=`Preventivo banchetto - ${service} di ${longDate}, ospiti ${e.adults}${hasBaby?' e '+e.baby+' baby':''}`
   let detailSize=10
@@ -97,7 +97,7 @@ export async function createEventPdf(request: EventPdfRequest, adult: EventMenuL
     }
     return y
   }
-  text('MENU ADULTI',16,bodyTop,9,'helvetica',gold)
+  text('MENU del BANCHETTO',16,bodyTop,9,'helvetica',gold)
   const leftEnd=drawGroups(adults,16,bodyTop+7,leftWidth)
   let rightEnd=bodyTop
   if(hasBaby){text('MENU BABY',rightX,rightEnd,9,'helvetica',gold);rightEnd=drawGroups(babies,rightX,rightEnd+7,rightWidth)}
