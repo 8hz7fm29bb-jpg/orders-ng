@@ -31,3 +31,11 @@
 .eventDeleteArea{gap:18px;flex-wrap:wrap;padding:20px 0 18px;margin:22px 26px 28px}.eventDeleteArea .primary{background:#21854a;color:#fff;border-color:#21854a}.eventDeleteArea .primary:hover{background:#196b3b;border-color:#196b3b}@media(max-width:700px){.eventDeleteArea{gap:16px;margin:20px 22px 28px;padding-bottom:18px}}
 
 .eventPdfFullscreen{position:fixed;inset:0;z-index:10000;margin:0;border:0;border-radius:0;padding:18px;background:#fff;display:flex;flex-direction:column}.eventPdfFullscreen .eventPdfPreviewActions{flex-shrink:0}.eventPdfFullscreen iframe{flex:1;min-height:0;height:auto}.eventPdfFullscreen .eventPdfPreviewActions button{margin-left:auto}@media(max-width:620px){.eventPdfFullscreen{padding:12px}.eventPdfFullscreen .eventPdfPreviewActions{gap:8px}.eventPdfFullscreen .eventPdfPreviewActions button{margin-left:0}}
+
+/* Smartphone: constrain the native Safari date control to its grid column. */
+@media screen and (max-width:700px){
+  .eventForm .eventTopRow,.eventForm .eventPairRow{grid-template-columns:minmax(0,1fr);min-width:0}
+  .eventForm .eventTopRow>label{min-width:0}
+  .eventForm .eventTopRow input[type="date"]{display:block;min-width:0;max-width:100%;width:100%;box-sizing:border-box;-webkit-appearance:none;appearance:none;font-size:16px}
+  .eventForm .eventTopRow input[type="date"]::-webkit-date-and-time-value{min-width:0;text-align:left}
+}
