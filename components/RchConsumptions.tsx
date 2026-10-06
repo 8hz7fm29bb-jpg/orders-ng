@@ -394,7 +394,7 @@ export function RchConsumptions({
         </section>
       )}
       {(tab === "associations" || (tab === "import" && rows.length > 0)) && (
-        <section className="panel tablePanel">
+        <section className="panel tablePanel rchTablePanel">
           <div className="panelHead">
             <h3>
               {tab === "import"
@@ -450,7 +450,7 @@ export function RchConsumptions({
         </section>
       )}
       {tab === "archive" && (
-        <section className="panel tablePanel">
+        <section className="panel tablePanel rchTablePanel">
           <div className="panelHead">
             <h3>Resoconti importati</h3>
           </div>
