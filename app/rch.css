@@ -1,0 +1,79 @@
+.rchControls {
+  padding: 24px;
+  display: grid;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.rchControls label {
+  display: grid;
+  gap: 8px;
+}
+.rchControls input,
+.rchAssociation select {
+  max-width: 100%;
+  min-width: 0;
+}
+.rchControls .formActions {
+  flex-wrap: wrap;
+}
+.rchAssociation {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.rchAssociation select {
+  width: 280px;
+}
+.rchAssociation label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.rchAssociation input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+.rchActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.rchHint {
+  padding: 0 24px;
+}
+.rchReportControls {
+  padding: 16px;
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.rchReportControls label {
+  display: grid;
+  gap: 6px;
+}
+.rchReportControls select {
+  max-width: 100%;
+}
+@media (max-width: 600px) {
+  .rchControls {
+    padding: 16px;
+  }
+  .rchAssociation select {
+    width: 210px;
+  }
+  .rchReportControls {
+    display: grid;
+  }
+  .rchControls .reportDates {
+    width: 100%;
+  }
+}
+@media print {
+  .rchReportControls,
+  .rchHint {
+    display: none !important;
+  }
+}
