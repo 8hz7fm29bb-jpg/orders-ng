@@ -80,8 +80,8 @@
 
 .ingredientDeleteButton{display:inline-flex;align-items:center;gap:6px;border:1px solid #b42318;color:#b42318;background:transparent;border-radius:8px;padding:10px 14px;margin-right:auto;cursor:pointer}.ingredientDeleteButton:disabled{opacity:.5;cursor:wait}@media(max-width:600px){.ingredientForm .formActions{flex-wrap:wrap;gap:10px}.ingredientDeleteButton{flex-basis:100%;justify-content:center;margin-right:0}}
 
-/* Keep the RCH heading and search inside the table card. */
-.tablePanel > .panelHead:has(input[aria-label="Cerca ingrediente RCH"]) {
+/* Keep all RCH headings and search inside the table cards. */
+.rchTablePanel > .panelHead {
   padding: 24px 24px 0;
   align-items: center;
   gap: 16px;
@@ -93,7 +93,7 @@
   min-width: 0;
 }
 @media (max-width: 600px) {
-  .tablePanel > .panelHead:has(input[aria-label="Cerca ingrediente RCH"]) {
+  .rchTablePanel > .panelHead {
     padding: 16px 16px 0;
     flex-direction: column;
     align-items: stretch;
