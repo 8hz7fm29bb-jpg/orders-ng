@@ -61,8 +61,22 @@
   display: grid;
   gap: 6px;
 }
+.rchReportControls label:has(> select) {
+  min-width: 0;
+}
 .rchReportControls select {
+  display: block;
+  width: 100%;
   max-width: 100%;
+  min-width: 0;
+  margin: 0;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background-color: #fff;
+  color: var(--ink);
+  padding: 0 12px;
+  box-sizing: border-box;
 }
 @media (max-width: 600px) {
   .rchControls {
