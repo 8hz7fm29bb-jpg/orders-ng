@@ -329,7 +329,7 @@ export function RchConsumptions({
           <h3>Resoconto settimanale RCH</h3>
           <p>
             Carica il file completo: ogni ingrediente viene contato una sola
-            volta. I vini contrassegnati come esclusi non entrano nella lista
+            volta. I prodotti contrassegnati come esclusi non entrano nella lista
             acquisti.
           </p>
           <label>
