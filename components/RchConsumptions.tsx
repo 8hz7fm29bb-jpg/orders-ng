@@ -276,7 +276,7 @@ export function RchConsumptions({
             disabled={busy}
             onChange={(e) => change(m, { excluded: e.target.checked })}
           />{" "}
-          Escluso / vino
+          Escluso
         </label>
         {!m.excluded && !m.ingredient_id && (
           <button
