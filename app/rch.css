@@ -77,3 +77,5 @@
     display: none !important;
   }
 }
+
+.ingredientDeleteButton{display:inline-flex;align-items:center;gap:6px;border:1px solid #b42318;color:#b42318;background:transparent;border-radius:8px;padding:10px 14px;margin-right:auto;cursor:pointer}.ingredientDeleteButton:disabled{opacity:.5;cursor:wait}@media(max-width:600px){.ingredientForm .formActions{flex-wrap:wrap;gap:10px}.ingredientDeleteButton{flex-basis:100%;justify-content:center;margin-right:0}}
