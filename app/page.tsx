@@ -28,7 +28,7 @@ const sections: { id: Section; label: string; icon: any }[] = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'events', label: 'Eventi', icon: CalendarDays },
   { id: 'clients', label: 'Clienti', icon: UsersRound },
-  { id: 'carte-associations', label: 'Associazioni À la carte', icon: PackageSearch },
+  { id: 'carte-associations', label: 'Associazioni', icon: PackageSearch },
   { id: 'recipes', label: 'Ricettario', icon: ChefHat },
   { id: 'ingredients', label: 'Ingredienti', icon: PackageSearch },
   { id: 'rch', label: 'Consumi RCH', icon: PackageSearch },
