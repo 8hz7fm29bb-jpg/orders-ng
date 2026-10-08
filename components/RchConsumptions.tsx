@@ -314,7 +314,6 @@ export function RchConsumptions({
           {[
             ["import", "Importa file"],
             ["archive", "Archivio"],
-            ["associations", "Associazioni ingredienti"],
           ].map(([id, label]) => (
             <button
               key={id}
