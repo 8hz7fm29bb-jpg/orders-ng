@@ -286,3 +286,9 @@
 @media screen and (max-width:767px){
   .reportExportActions>button:nth-child(2):not(:last-child){display:none}
 }
+
+.recipeCollectionTabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:24px}
+.recipeCollectionTab{display:flex;align-items:center;gap:14px;text-align:left;background:white;border:2px solid #e5e5e5;border-radius:14px;padding:20px;cursor:pointer;color:inherit;min-width:0}
+.recipeCollectionTab.active{border-color:#e8b72e;background:#fff9e9}
+.recipeCollectionTab span{display:grid;gap:5px}.recipeCollectionTab strong{font-size:18px}.recipeCollectionTab small{color:#777}
+@media(max-width:760px){.recipeCollectionTab{padding:14px;gap:10px}.recipeCollectionTab strong{font-size:16px}}

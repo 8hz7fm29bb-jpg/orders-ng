@@ -13,7 +13,7 @@ async function eventIdFromNumber(eventNumber:number){if(!supabase)return{id:null
 
 async function loadRecipes():Promise<{recipes:MenuRecipeOption[],error:string|null}>{
  if(!supabase)return{recipes:[],error:'Supabase non disponibile'}
- const rr=await supabase.from('recipes').select('id,name,category,active,target_food_cost_percent,manual_sale_price,standard_portions').eq('active',true).order('name')
+ const rr=await supabase.from('recipes').select('id,name,category,active,target_food_cost_percent,manual_sale_price,standard_portions').eq('active',true).eq('recipe_collection','banquets').order('name')
  if(rr.error)return{recipes:[],error:rr.error.message}
  const ir=await supabase.from('recipe_ingredients').select('recipe_id,quantity,unit:units(code),ingredient:ingredients(current_price,unit:units(code))')
  if(ir.error)return{recipes:[],error:ir.error.message}
@@ -33,6 +33,7 @@ export async function loadEventMenuByNumber(eventNumber:number,audience:'adult'|
 
 export async function saveEventMenuByNumber(eventNumber:number,menuId:string|null,lines:EventMenuLine[],recipes:MenuRecipeOption[],audience:'adult'|'baby'='adult'){
  if(!supabase)return{menuId:null as string|null,error:'Supabase non disponibile'}
+ if(lines.length){const allowed=await supabase.from('recipes').select('id').in('id',lines.map(line=>line.recipe_id)).eq('recipe_collection','banquets');if(allowed.error)return{menuId,error:allowed.error.message};const ids=new Set((allowed.data||[]).map(r=>r.id));if(lines.some(line=>!ids.has(line.recipe_id)))return{menuId,error:'Nei menu degli eventi puoi selezionare solo ricette Banchetti.'}}
  const eventRes=await eventIdFromNumber(eventNumber);if(!eventRes.id)return{menuId:null,error:eventRes.error}
  let id=menuId
  if(!id){const created=await supabase.from('event_menus').insert({event_id:eventRes.id,name:audience==='baby'?'Menu baby':'Menu principale',active:true}).select('id').single();if(created.error)return{menuId:null,error:created.error.message};id=created.data.id as string}
