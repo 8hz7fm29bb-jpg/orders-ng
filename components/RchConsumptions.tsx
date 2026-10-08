@@ -49,6 +49,7 @@ export function RchConsumptions({
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState(""),
     [query, setQuery] = useState(""),
+    [onlyPending, setOnlyPending] = useState(false),
     [detail, setDetail] = useState<RchImport | null>(null),
     [replace, setReplace] = useState("");
   async function refresh() {
@@ -294,12 +295,17 @@ export function RchConsumptions({
       </div>
     );
   }
+  const isPending = (m: RchMapping) => !m.excluded && !ingredients.some(i => i.id === m.ingredient_id && i.active && compatible(m.unit_code, i.unit?.code));
+  const pending = mappings.filter(isPending).length;
+  const associated = mappings.filter(m => !m.excluded && !isPending(m)).length;
+  const excluded = mappings.filter(m => m.excluded).length;
   const visible = (
     tab === "import"
       ? rows.map((r) => ({ ...byId.get(r.rch_id)!, ...r }))
       : mappings
   ).filter((m) =>
-    `${m.name} ${m.rch_id}`.toLowerCase().includes(query.toLowerCase()),
+    `${m.name} ${m.rch_id}`.toLowerCase().includes(query.toLowerCase()) &&
+    (tab !== "associations" || !onlyPending || isPending(m)),
   );
   return (
     <>
@@ -415,10 +421,15 @@ export function RchConsumptions({
             />
           </div>
           {tab === "associations" && (
-            <p className="rchHint">
-              Le modifiche valgono per le prossime importazioni. Per aggiornare
-              un resoconto precedente usa Ricalcola nell’archivio.
-            </p>
+            <>
+              <p className="rchHint">
+                Collega i prodotti RCH al magazzino ORDERS. Il salvataggio aggiorna le associazioni per le prossime importazioni. {pending} da associare · {associated} associati{excluded > 0 && ` · ${excluded} esclusi`}.
+              </p>
+              <label className="cartePendingFilter">
+                <input type="checkbox" checked={onlyPending} onChange={e => setOnlyPending(e.target.checked)}/> Solo da associare
+              </label>
+              <p className="rchHint">Per aggiornare un resoconto precedente usa Ricalcola nell’archivio.</p>
+            </>
           )}
           <div className="responsiveTable">
             <table>
