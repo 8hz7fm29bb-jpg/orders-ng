@@ -30,12 +30,16 @@ export function RchConsumptions({
   ingredients,
   units,
   onCreated,
+  associationsOnly = false,
+  onAssociations,
 }: {
   ingredients: Ingredient[];
   units: Unit[];
   onCreated: () => Promise<void>;
+  associationsOnly?: boolean;
+  onAssociations?: () => void;
 }) {
-  const [tab, setTab] = useState("import"),
+  const [tab, setTab] = useState(associationsOnly ? "associations" : "import"),
     [mappings, setMappings] = useState<RchMapping[]>([]),
     [imports, setImports] = useState<RchImport[]>([]),
     [rows, setRows] = useState<RchRow[]>([]),
@@ -299,7 +303,7 @@ export function RchConsumptions({
   );
   return (
     <>
-      <div className="toolbar">
+      {!associationsOnly && <div className="toolbar">
         <div className="categoryTabs">
           {[
             ["import", "Importa file"],
@@ -310,6 +314,7 @@ export function RchConsumptions({
               key={id}
               className={`categoryTab ${tab === id ? "active" : ""}`}
               onClick={() => {
+                if (id === "associations" && onAssociations) { onAssociations(); return; }
                 setTab(id);
                 setDetail(null);
               }}
@@ -319,6 +324,7 @@ export function RchConsumptions({
           ))}
         </div>
       </div>
+      }
       {message && (
         <div className="authInfoBox" role="status">
           {message}
