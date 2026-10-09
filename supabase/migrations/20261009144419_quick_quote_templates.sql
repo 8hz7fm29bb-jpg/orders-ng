@@ -15,7 +15,7 @@ alter table public.events add column quick_quote_key uuid unique;
 
 -- The authenticated caller's existing RLS permissions remain in force.
 -- A transaction saves client, event and both menus together; repeated requests
--- update the same draft rather than creating a duplicate event.
+-- update the same quote rather than creating a duplicate event.
 create function public.save_quick_quote(p_request_id uuid, p_quote jsonb)
 returns jsonb language plpgsql security invoker set search_path = '' as $$
 declare
@@ -51,7 +51,7 @@ begin
   end if;
   perform pg_advisory_xact_lock(hashtextextended(p_request_id::text, 0));
   select * into v_event from public.events where quick_quote_key = p_request_id for update;
-  if v_event.id is not null and v_event.status <> 'bozza' then
+  if v_event.id is not null and v_event.status not in ('bozza','preventivo_inviato') then
     raise exception 'Questo evento è già stato gestito: aprilo dalla sezione Eventi.';
   end if;
   v_client_id := nullif(p_quote->>'client_id','')::uuid;
@@ -68,11 +68,11 @@ begin
   select * into strict v_client from public.clients where id = v_client_id;
   if v_event.id is null then
     insert into public.events(client_id,event_date,service,adults,baby,status,price_per_adult,price_per_baby,price_adjustment,baby_price_adjustment,quick_quote_key)
-    values (v_client_id,(p_quote->>'event_date')::date,p_quote->>'service',v_adults,v_baby,'bozza',v_adult_price,v_baby_price,
+    values (v_client_id,(p_quote->>'event_date')::date,p_quote->>'service',v_adults,v_baby,'preventivo_inviato',v_adult_price,v_baby_price,
       coalesce((p_quote->>'price_adjustment')::numeric,0),coalesce((p_quote->>'baby_price_adjustment')::numeric,0),p_request_id)
     returning * into v_event;
   else
-    update public.events set client_id=v_client_id,event_date=(p_quote->>'event_date')::date,service=p_quote->>'service',adults=v_adults,baby=v_baby,
+    update public.events set status='preventivo_inviato',client_id=v_client_id,event_date=(p_quote->>'event_date')::date,service=p_quote->>'service',adults=v_adults,baby=v_baby,
       price_per_adult=v_adult_price,price_per_baby=v_baby_price,price_adjustment=coalesce((p_quote->>'price_adjustment')::numeric,0),
       baby_price_adjustment=coalesce((p_quote->>'baby_price_adjustment')::numeric,0)
     where id=v_event.id returning * into v_event;
