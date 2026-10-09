@@ -11,7 +11,7 @@ export type EventMenuLine={recipe_id:string;course_type:string;sale_price?:numbe
 
 async function eventIdFromNumber(eventNumber:number){if(!supabase)return{id:null as string|null,error:'Supabase non disponibile'};const res=await supabase.from('events').select('id').eq('event_number',eventNumber).single();if(res.error)return{id:null,error:res.error.message};return{id:res.data.id as string,error:null as string|null}}
 
-async function loadRecipes():Promise<{recipes:MenuRecipeOption[],error:string|null}>{
+export async function loadRecipes():Promise<{recipes:MenuRecipeOption[],error:string|null}>{
  if(!supabase)return{recipes:[],error:'Supabase non disponibile'}
  const rr=await supabase.from('recipes').select('id,name,category,active,target_food_cost_percent,manual_sale_price,standard_portions').eq('active',true).eq('recipe_collection','banquets').order('name')
  if(rr.error)return{recipes:[],error:rr.error.message}
