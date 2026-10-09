@@ -40,7 +40,7 @@ export function QuickQuote({ clients, onClose, onSaved }: { clients: QuoteClient
       if (cancelled) return
       const stored = saved.data.payload as QuoteTemplate
       const hydrate = (lines: QuoteLine[]) => lines.map(line => ({ ...line, sale_price: catalog.recipes.find(r => r.id === line.recipe_id)?.sale_price ?? line.sale_price }))
-      const initial: QuoteTemplate = { ...stored, adult_lines: hydrate(stored.adult_lines), baby_lines: hydrate(stored.baby_lines) }
+      const initial: QuoteTemplate = { ...stored, adult_lines: scaleMenu(hydrate(stored.adult_lines), stored.adults), baby_lines: scaleMenu(hydrate(stored.baby_lines), stored.baby) }
       setTemplate(initial); setRecipes(catalog.recipes)
       setAdults(initial.adults); setBaby(initial.baby)
       setAdultLines(scaleMenu(initial.adult_lines, initial.adults)); setBabyLines(scaleMenu(initial.baby_lines, initial.baby))

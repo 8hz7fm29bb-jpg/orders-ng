@@ -12,7 +12,7 @@ export function menuBase(lines: QuoteLine[]) {
   return roundMenuPrice(lines.reduce((sum, line) => sum + Number(line.sale_price || 0) * line.portion_ratio, 0))
 }
 export function scaleMenu(lines: QuoteLine[], count: number): QuoteLine[] {
-  return lines.map(line => ({ ...line, portions: Math.round(count * line.portion_ratio * 100) / 100 }))
+  return lines.map(line => ({ ...line, portions: count, portion_ratio: 1 }))
 }
 export function quotePrice(lines: QuoteLine[], original: QuoteLine[], originalPrice: number) {
   return Math.max(0, Math.round((originalPrice + menuBase(lines) - menuBase(original)) * 100) / 100)
