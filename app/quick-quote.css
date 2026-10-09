@@ -13,20 +13,19 @@
 .quickQuoteLaunch{display:flex;gap:12px;flex-wrap:wrap}.quickQuoteLaunch .primary{background:var(--accent);color:var(--ink)}
 @media(max-width:700px){.quickQuoteIntro{margin-left:22px;margin-right:22px}.quickQuoteMenus{margin-left:22px;margin-right:22px}.quickQuotePrices{grid-template-columns:1fr}.quickQuoteActions{margin-left:22px;margin-right:22px;flex-direction:column}.quickQuoteActions button{width:100%;min-height:46px}.quickQuoteLaunch{width:100%}.quickQuoteLaunch button{flex:1;min-height:44px}}
 
-/* Date, service and guest counts share the same dimensions. */
-.quickQuoteDetails{display:grid;grid-column:1/-1;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;min-width:0}
-.quickQuoteDetails>label{min-width:0;display:flex;flex-direction:column;gap:7px;font-size:12px;font-weight:700;color:#5d5a53}
-.quickQuoteDetails input,.quickQuoteDetails select{width:100%;height:48px;min-height:48px;max-height:48px;padding:0 12px;border:1px solid #dcd9d2;border-radius:10px;background:#fff;color:var(--ink);font-size:16px}
-@media(max-width:700px){.quickQuoteDetails{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 14px}.quickQuoteDetails input,.quickQuoteDetails select{padding-left:6px;padding-right:6px}}
 
-/* Compact contact fields and vertically aligned native date text. */
-.quickQuoteForm fieldset>.span2{width:calc((100% - 20px)/2);min-width:0}
-.quickQuoteDetails input[type="date"]{color:var(--ink);text-align:left;padding-top:12px;padding-bottom:12px}
-.quickQuoteDetails input[type="date"]::-webkit-datetime-edit{display:inline-flex;align-items:center;padding:0;height:auto}
-.quickQuoteDetails input[type="date"]::-webkit-date-and-time-value{display:flex;align-items:center;height:auto;margin:0;text-align:left}
-@media(max-width:700px){.quickQuoteForm fieldset>.span2{width:100%}}
-
-/* Match detail fields to contact fields and keep field values regular. */
-.quickQuoteForm fieldset>.span2>input,.quickQuoteDetails input,.quickQuoteDetails select{height:38px;min-height:38px;max-height:38px;padding:0 12px}
-.quickQuoteDetails input[type="date"]{padding-top:7px;padding-bottom:7px}
+/* Use the event form layout for the quick quote header. */
+.quickQuoteForm fieldset>.span2{width:100%;min-width:0}
+.quickQuoteForm fieldset>.span2>input{height:52px;min-height:52px;padding:0 14px;font-size:16px}
+.quickQuoteDetails{display:grid;grid-column:1/-1;grid-template-columns:repeat(2,minmax(0,260px));gap:14px;min-width:0}
+.quickQuoteDetails>label{min-width:0;display:flex;flex-direction:column;gap:7px;font-size:11px;font-weight:700;color:#5d5a53}
+.quickQuoteDetails>label:nth-child(1){max-width:220px}
+.quickQuoteDetails>label:nth-child(2){max-width:200px}
+.quickQuoteDetails input,.quickQuoteDetails select{height:44px;min-height:44px;max-height:44px;padding:0 12px;font-size:16px}
+.quickQuoteDetails input[type="date"]{text-align:left;padding-top:10px;padding-bottom:10px}
+.quickQuoteDetails input[type="date"]::-webkit-datetime-edit{padding:0}
+.quickQuoteDetails input[type="date"]::-webkit-date-and-time-value{text-align:left;margin:0}
+.quickQuotePrices input{height:48px;min-height:48px;padding:0 10px;font-size:16px}
+.quickQuotePrices input[readonly]{background:var(--soft)}
 .quickQuoteForm input,.quickQuoteForm select,.quickQuoteForm textarea,.quickQuoteMenus input,.quickQuoteMenus select{font-weight:400}
+@media(max-width:700px){.quickQuoteDetails{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.quickQuoteDetails>label:nth-child(1),.quickQuoteDetails>label:nth-child(2){max-width:none}.quickQuoteDetails input,.quickQuoteDetails select{padding-left:6px;padding-right:6px}}
