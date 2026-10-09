@@ -25,3 +25,8 @@
 .quickQuoteDetails input[type="date"]::-webkit-datetime-edit{display:inline-flex;align-items:center;padding:0;height:auto}
 .quickQuoteDetails input[type="date"]::-webkit-date-and-time-value{display:flex;align-items:center;height:auto;margin:0;text-align:left}
 @media(max-width:700px){.quickQuoteForm fieldset>.span2{width:100%}}
+
+/* Match detail fields to contact fields and keep field values regular. */
+.quickQuoteForm fieldset>.span2>input,.quickQuoteDetails input,.quickQuoteDetails select{height:38px;min-height:38px;max-height:38px;padding:0 12px}
+.quickQuoteDetails input[type="date"]{padding-top:7px;padding-bottom:7px}
+.quickQuoteForm input,.quickQuoteForm select,.quickQuoteForm textarea,.quickQuoteMenus input,.quickQuoteMenus select{font-weight:400}
