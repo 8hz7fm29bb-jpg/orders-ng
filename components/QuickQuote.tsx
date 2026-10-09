@@ -21,7 +21,7 @@ export function QuickQuote({ clients, onClose, onSaved }: { clients: QuoteClient
   const [babyLines, setBabyLines] = useState<QuoteLine[]>([])
   const [adults, setAdults] = useState(0), [baby, setBaby] = useState(0)
   const [adultCorrection, setAdultCorrection] = useState('0'), [babyCorrection, setBabyCorrection] = useState('0')
-  const [customer, setCustomer] = useState(''), [phone, setPhone] = useState('')
+  const [customer, setCustomer] = useState('')
   const [date, setDate] = useState(''), [service, setService] = useState('')
   const [loading, setLoading] = useState(true), [busy, setBusy] = useState(false)
   const [error, setError] = useState(''), [message, setMessage] = useState('')
@@ -90,27 +90,24 @@ export function QuickQuote({ clients, onClose, onSaved }: { clients: QuoteClient
     if (!selectedClient && nameMatches.length > 1) { setError('Più clienti hanno questo nome: scegli la scheda corretta dai suggerimenti.'); return }
     if (!validMenu || (baby > 0 && !babyLines.length)) { setError('Seleziona una ricetta per ogni portata, anche nel menu baby.'); return }
     if (![adultPrice, babyPrice].every(p => Number.isFinite(p) && p >= 0)) { setError('Controlla prezzi e correttivi.'); return }
-    const standalone = window.matchMedia('(display-mode: standalone)').matches || Boolean((navigator as Navigator & { standalone?: boolean }).standalone)
-    const pdfWindow = generatePdf && !standalone ? window.open('', '_blank') : null
-    if (pdfWindow) { pdfWindow.document.title = 'Generazione PDF'; pdfWindow.document.body.textContent = 'Generazione PDF in corso…' }
     returnFocus.current = document.activeElement as HTMLElement
     actionLock.current = true; setBusy(true); setError(''); setMessage('')
     try {
       requestId.current ||= crypto.randomUUID()
-      const quote = { client_id: selectedClient?.id || null, client_name: customer.trim(), phone: selectedClient ? null : phone.trim(), event_date: date, service, adults, baby, price_per_adult: adultPrice, price_per_baby: babyPrice, price_adjustment: adultPrice - menuBase(adultLines), baby_price_adjustment: babyPrice - menuBase(babyLines), adult_lines: adultLines, baby_lines: baby > 0 ? babyLines : [] }
+      const quote = { client_id: selectedClient?.id || null, client_name: customer.trim(), phone: null, event_date: date, service, adults, baby, price_per_adult: adultPrice, price_per_baby: babyPrice, price_adjustment: adultPrice - menuBase(adultLines), baby_price_adjustment: babyPrice - menuBase(babyLines), adult_lines: adultLines, baby_lines: baby > 0 ? babyLines : [] }
       const { data, error: failure } = await supabase.rpc('save_quick_quote', { p_request_id: requestId.current, p_quote: quote })
       if (failure) throw failure
       const client = data.client as QuoteClient
       savedClient.current = { choice: customer, client }
-      setMessage(`Preventivo salvato: evento #${data.event_number}.`)
-      await onSaved()
+      setMessage(`Evento salvato: #${data.event_number}.`)
+      await onSaved().catch(() => {})
       if (generatePdf) {
         const event: EventPdfData = { event_number: data.event_number, event_date: date, service, adults, baby, price_per_adult: adultPrice, price_per_baby: babyPrice, internal_notes: '', celiac_count: 0, vegan_count: 0, vegetarian_count: 0, lactose_free_count: 0, client }
         const { downloadEventPdf } = await import('@/lib/event-pdf')
-        const result = await downloadEventPdf({ kind: 'quote', event, preview: pdfWindow }, adultLines, baby > 0 ? babyLines : [], recipes)
-        if (result) { if (previewUrl.current) URL.revokeObjectURL(previewUrl.current); previewUrl.current = result.url; setPreview(result) }
+        const result = await downloadEventPdf({ kind: 'quote', event, preview: null }, adultLines, baby > 0 ? babyLines : [], recipes)
+        if (result) { await new Promise<void>(resolve => window.setTimeout(resolve, 900)); if (previewUrl.current) URL.revokeObjectURL(previewUrl.current); previewUrl.current = result.url; setPreview(result) }
       }
-    } catch (e) { pdfWindow?.close(); setError(e instanceof Error ? e.message : (e as { message: string }).message) }
+    } catch (e) { setError(e instanceof Error ? e.message : (e as { message: string }).message) }
     finally { actionLock.current = false; setBusy(false) }
   }
   function block(audience: 'adult' | 'baby') {
@@ -125,11 +122,10 @@ export function QuickQuote({ clients, onClose, onSaved }: { clients: QuoteClient
     {loading ? <div className="empty">Caricamento menu predefinito…</div> : template && <>
       <form id="quickQuoteForm" className="formGrid eventForm quickQuoteForm" onSubmit={(e: FormEvent) => { e.preventDefault(); void saveQuote(true) }}>
         <fieldset disabled={busy}><label className="span2">Cliente<input aria-label="Cliente" autoFocus required value={customer} list="quickQuoteClients" placeholder="Cerca un cliente o scrivi un nuovo nome" onChange={e => setCustomer(e.target.value)} /><datalist id="quickQuoteClients">{clients.map(c => <option key={c.id} value={clientChoice(c)} />)}</datalist><small className="fieldHint">{selectedClient ? 'Cliente già presente in archivio.' : 'Il nuovo cliente sarà aggiunto all’archivio.'}</small></label>
-        {!selectedClient && <label className="span2">Telefono <small>(facoltativo)</small><input type="tel" value={phone} onChange={e => setPhone(e.target.value)} /></label>}
         <div className="quickQuoteDetails"><label>Data<input type="date" required value={date} onChange={e => setDate(e.target.value)} /></label><label>Servizio<select aria-label="Servizio" required value={service} onChange={e => setService(e.target.value)}><option value="">Seleziona</option><option value="pranzo">Pranzo</option><option value="cena">Cena</option><option value="altro">Altro</option></select></label><label>Adulti<input type="number" min="1" step="1" required value={adults} onChange={e => counts('adult', Math.max(0, Number(e.target.value)))} /></label><label>Baby<input type="number" min="0" step="1" required value={baby} onChange={e => counts('baby', Math.max(0, Number(e.target.value)))} /></label></div>
         <div className="quickQuotePrices"><section className="eventPriceGroup"><h4>MENU ADULTI</h4><div className="eventPriceFields"><label>Prezzo per persona<input readOnly value={Number.isFinite(adultPrice) ? euro(adultPrice) : '—'} /></label><label>Correttivo €<input inputMode="decimal" value={adultCorrection} onChange={e => setAdultCorrection(e.target.value)} /></label></div></section><section className="eventPriceGroup"><h4>MENU BABY</h4><div className="eventPriceFields"><label>Prezzo per baby<input readOnly value={Number.isFinite(babyPrice) ? euro(babyPrice) : '—'} /></label><label>Correttivo €<input inputMode="decimal" value={babyCorrection} onChange={e => setBabyCorrection(e.target.value)} /></label></div></section></div></fieldset>
       </form>
-      <div className="quickQuoteActions"><button type="button" className="secondary" disabled={busy || !validMenu} onClick={() => void saveTemplate()}><Save size={16} /> Salva come menu predefinito</button><button type="button" className="secondary" disabled={busy} onClick={() => void saveQuote(false)}>Salva preventivo</button><button type="submit" form="quickQuoteForm" className="primary" disabled={busy || !validMenu}><FileText size={17} /> {busy ? 'Elaborazione…' : 'Genera preventivo'}</button></div>
+      <div className="quickQuoteActions"><button type="button" className="secondary" disabled={busy || !validMenu} onClick={() => void saveTemplate()}><Save size={16} /> Salva come menu predefinito</button><button type="submit" form="quickQuoteForm" className="primary" disabled={busy || !validMenu}><FileText size={17} /> {busy ? 'Elaborazione…' : 'Genera preventivo'}</button></div>
       <fieldset className="quickQuoteMenus" disabled={busy}>{block('adult')}{baby > 0 && block('baby')}</fieldset>
     </>}
     {error && <div className="errorBox quickQuoteNotice" role="alert">{error}</div>}{message && <div className="quickQuoteSuccess quickQuoteNotice" role="status">{message}</div>}

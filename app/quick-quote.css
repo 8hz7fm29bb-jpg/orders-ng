@@ -29,3 +29,9 @@
 .quickQuotePrices input[readonly]{background:var(--soft)}
 .quickQuoteForm input,.quickQuoteForm select,.quickQuoteForm textarea,.quickQuoteMenus input,.quickQuoteMenus select{font-weight:400}
 @media(max-width:700px){.quickQuoteDetails{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.quickQuoteDetails>label:nth-child(1),.quickQuoteDetails>label:nth-child(2){max-width:none}.quickQuoteDetails input,.quickQuoteDetails select{padding-left:6px;padding-right:6px}}
+
+/* Compact client and four matching detail fields. */
+.quickQuoteForm fieldset>.span2{width:534px;max-width:100%}
+.quickQuoteDetails>label:nth-child(1),.quickQuoteDetails>label:nth-child(2){max-width:none}
+.quickQuoteSuccess{position:fixed;top:38%;left:50%;transform:translate(-50%,-50%);z-index:100;margin:0;padding:22px 30px;font-size:22px;text-align:center;box-shadow:0 12px 36px rgba(0,0,0,.16);max-width:calc(100vw - 40px)}
+@media(max-width:700px){.quickQuoteForm fieldset>.span2{width:100%}.quickQuoteSuccess{font-size:18px}}
