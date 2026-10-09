@@ -292,3 +292,5 @@
 .recipeCollectionTab.active{border-color:#e8b72e;background:#fff9e9}
 .recipeCollectionTab span{display:grid;gap:5px}.recipeCollectionTab strong{font-size:18px}.recipeCollectionTab small{color:#777}
 @media(max-width:760px){.recipeCollectionTab{padding:14px;gap:10px}.recipeCollectionTab strong{font-size:16px}}
+
+.recipePricingRow input[readonly]{background:#f5f4f0;color:var(--muted);cursor:default}.costRows div:has(.costTargetInput){align-items:center}.costRows label{color:var(--muted);text-transform:uppercase;font-size:12px;line-height:1.4}.costRows .costTargetInput{width:92px;min-width:0;flex:none;padding:10px 8px;border:1px solid var(--line);border-radius:9px;font-size:15px;font-weight:700;text-align:right;background:#fff;color:var(--ink)}
