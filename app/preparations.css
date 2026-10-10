@@ -16,3 +16,7 @@
 @media(max-width:600px){.recipeActions .recipeDeleteButton{margin-right:0}}
 
 .recipeWork.preparationWork{grid-template-columns:minmax(0,1fr)}
+
+.reportService{display:flex;align-items:center;gap:12px;white-space:nowrap;font-weight:600}
+.reportService select{width:auto;min-width:165px}
+@media(max-width:700px){.reportService{display:flex;flex-direction:column;align-items:stretch;gap:8px;width:100%;font-size:13px}.reportService select{width:100%;min-height:48px}}
