@@ -48,7 +48,7 @@ export function preparationNeeds(dishes: { id: string; name: string; quantity: n
       row.uses.push({ name: dish.name, portions: dish.quantity, grams });
     }
   }
-  const categories=['Entrée','Antipasti','Primi','Secondi','Contorni','Dessert'];
+  const categories=['Entrée','Antipasti','Primi','Secondi','Contorni','Dessert','Basi neutre'];
   const order=(category?:string|null)=>{const index=categories.indexOf(category||'');return index<0?categories.length:index};
   return Array.from(grouped.values()).sort((a,b)=>order(a.preparation.category)-order(b.preparation.category)||a.preparation.name.localeCompare(b.preparation.name,'it'));
 }

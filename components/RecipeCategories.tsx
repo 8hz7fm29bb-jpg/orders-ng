@@ -8,11 +8,14 @@ export const RECIPE_CATEGORIES = [
   'Beverage',
 ] as const
 
-export type RecipeCategory = typeof RECIPE_CATEGORIES[number]
+export const PREPARATION_CATEGORIES = [...RECIPE_CATEGORIES.filter(c=>c!=='Beverage'), 'Basi neutre'] as const
+
+export type RecipeCategory = typeof RECIPE_CATEGORIES[number] | 'Basi neutre'
 
 export function normalizeRecipeCategory(value?: string | null): RecipeCategory | null {
   const v = (value || '').trim().toLowerCase()
   if (!v) return null
+  if (v === 'basi neutre') return 'Basi neutre'
   if (v === 'entrée' || v === 'entree') return 'Entrée'
   if (v === 'antipasto' || v === 'antipasti') return 'Antipasti'
   if (v === 'primo' || v === 'primi' || v === 'primi piatti' || v === 'primo piatto') return 'Primi'
