@@ -14,3 +14,5 @@
 .recipeActions .recipeDeleteButton{margin-right:auto;color:#b42318;border-color:#efc5c1}
 .recipeActions .recipeDeleteButton:hover{background:#fff1ef}
 @media(max-width:600px){.recipeActions .recipeDeleteButton{margin-right:0}}
+
+.recipeWork.preparationWork{grid-template-columns:minmax(0,1fr)}
