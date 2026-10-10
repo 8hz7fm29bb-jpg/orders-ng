@@ -36,7 +36,7 @@ export async function createEventPdf(request: EventPdfRequest, adult: EventMenuL
   const rule=(y:number)=>{doc.setDrawColor(...gold);doc.setLineWidth(.2);doc.line(16,y,194,y)}
   const groups=(items:EventMenuLine[])=>{
     const map=new Map<string,string[]>()
-    for(const l of items){const r=recipes.find(r=>r.id===l.recipe_id);const category=normalizeRecipeCategory(r?.category||l.course_type)||r?.category||l.course_type||'Portate';if(!map.has(category))map.set(category,[]);map.get(category)!.push(r?.name||'Portata')}
+    for(const l of items){const r=recipes.find(r=>r.id===l.recipe_id);const category=normalizeRecipeCategory(r?.category||l.course_type)||r?.category||l.course_type||'Portate';if(!map.has(category))map.set(category,[]);map.get(category)!.push(r?.name||l.display_name||'Portata')}
     return [...map.entries()]
   }
   const adults=groups(adult),babies=groups(baby)
@@ -148,7 +148,7 @@ function createKitchenPdf(e: EventPdfData, adult: EventMenuLine[], baby: EventMe
   const recipeMap=new Map(recipes.map(r=>[r.id,r]))
   const groups=(items:EventMenuLine[],count:number)=>{
     const map=new Map<string,{name:string;portions:number}[]>()
-    for(const line of items){const r=recipeMap.get(line.recipe_id);const category=normalizeRecipeCategory(r?.category||line.course_type)||r?.category||line.course_type||'Portate';if(!map.has(category))map.set(category,[]);map.get(category)!.push({name:r?.name||'Portata',portions:line.portions??count})}
+    for(const line of items){const r=recipeMap.get(line.recipe_id);const category=normalizeRecipeCategory(r?.category||line.course_type)||r?.category||line.course_type||'Portate';if(!map.has(category))map.set(category,[]);map.get(category)!.push({name:r?.name||line.display_name||'Portata',portions:line.portions??count})}
     return [...map.entries()]
   }
   const adults=groups(adult,e.adults), babies=groups(baby,e.baby)
