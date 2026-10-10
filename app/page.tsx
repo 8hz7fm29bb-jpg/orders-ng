@@ -120,6 +120,25 @@ function RecipeModal({recipe,collection,recipes,ingredients,units,onClose,onSave
  const total=batchCost/standardPortions,suggested=Number(f.target_food_cost_percent)>0?total/(Number(f.target_food_cost_percent)/100):0,menuPrice=Number(f.manual_sale_price||0),actualFoodCost=menuPrice>0?total/menuPrice*100:null;
  const canLink=!isPreparation&&['Primi','Dessert'].includes(f.category);
  function updateLine(index:number,patch:Partial<{ingredient_id:string;quantity:string;unit_id:string}>){setLines(lines.map((l,i)=>{if(i!==index)return l;const next={...l,...patch};if(patch.ingredient_id)next.unit_id=ingredients.find(x=>x.id===patch.ingredient_id)?.unit_id||'';return next}))}
+ async function remove(){
+  if(!recipe||!supabase||saving||photoPreparing)return;
+  setSaving(true);
+  try{
+   const [events,links]=await Promise.all([
+    supabase.from('event_menu_items').select('id',{count:'exact',head:true}).eq('recipe_id',recipe.id),
+    supabase.from('recipe_preparations').select('id',{count:'exact',head:true}).eq('preparation_id',recipe.id)
+   ]);
+   if(events.error||links.error)throw events.error||links.error;
+   if(events.count)return alert('Questa ricetta è utilizzata nei banchetti e non può essere eliminata, per conservare lo storico.');
+   if(links.count)return alert('Questa salsa o crema è collegata ad altri piatti. Rimuovi prima i collegamenti dalle relative ricette.');
+   if(!confirm(`Eliminare definitivamente “${recipe.name}”? Questa operazione non può essere annullata.`))return;
+   const result=await supabase.from('recipes').delete().eq('id',recipe.id).select('id');
+   if(result.error){if(result.error.code==='23503')return alert('La ricetta è collegata ad altri dati e non può essere eliminata. Rimuovi prima i collegamenti.');throw result.error}
+   if(!result.data?.length)return alert('Ricetta non eliminata. Verifica i permessi del tuo account e aggiorna la pagina.');
+   if(recipe.photo_path)await supabase.storage.from(RECIPE_PHOTO_BUCKET).remove([recipe.photo_path]);
+   await onSaved();onClose();
+  }catch(error){alert('Impossibile eliminare la ricetta: '+(error as {message:string}).message)}finally{setSaving(false)}
+ }
  async function save(e:FormEvent){
   e.preventDefault();if(!supabase)return;
   if(!f.category)return alert('Seleziona una categoria per la ricetta.');
@@ -151,6 +170,6 @@ function RecipeModal({recipe,collection,recipes,ingredients,units,onClose,onSave
   </section><div className="recipeSideColumn"><aside className="costPanel"><span>{isPreparation?'COSTO DELLA PREPARAZIONE':'PREZZO DI VENDITA CONSIGLIATO'}</span><strong>{isPreparation?euro(batchCost):suggested?euro(suggested):'—'}</strong><div className="costRows"><div><span>{isPreparation?'Costo per kg':'Costo food reale'}</span><b>{isPreparation?(Number(f.yield_grams)>0?euro(batchCost/Number(f.yield_grams)*1000):'—'):euro(total)}</b></div><div>{isPreparation?<><span>Resa finale</span><b>{f.yield_grams||'—'} g</b></>:isCarte?<><label htmlFor="recipe-food-cost-target">Food cost target %</label><input id="recipe-food-cost-target" className="costTargetInput" type="number" min="1" max="100" step="0.1" value={f.target_food_cost_percent} onChange={e=>setF({...f,target_food_cost_percent:e.target.value})}/></>:<><span>Food cost target</span><b>{f.target_food_cost_percent}%</b></>}</div></div>{isPreparation&&f.yield_estimated&&<p className="preparationBadge">Resa teorica da confermare</p>}</aside><RecipePhoto path={recipe?.photo_path} change={photoChange} onChange={setPhotoChange} onPreparing={setPhotoPreparing} disabled={saving}/></div></div>
   {(canLink||prepLines.length>0)&&<PreparationEditor lines={prepLines} onChange={setPrepLines} preparations={preparationOptions}/>}
   {isPreparation&&recipe&&<section className="compositionBox preparationComposition"><div className="compositionHead"><h3>Piatti che utilizzano questa preparazione</h3></div><div className="ingredientImpactList">{recipes.filter(r=>r.recipe_preparations?.some(l=>l.preparation_id===recipe.id)).map(r=><div className="ingredientImpactRecipe" key={r.id}><div><strong>{r.name}</strong><small>{r.recipe_collection==='a_la_carte'?'À la carte':'Banchetti'}</small></div></div>)}</div><p className="preparationHint">Modificando ingredienti o resa, si aggiornano i calcoli dei piatti collegati.</p></section>}
-  <div className="formGrid recipeNotes"><label className="span2">Procedimento<textarea rows={5} value={f.procedure} onChange={e=>setF({...f,procedure:e.target.value})}/></label><label className="span2">Note<textarea rows={3} value={f.notes} onChange={e=>setF({...f,notes:e.target.value})}/></label></div><div className="formActions recipeActions"><button type="button" className="ghost" onClick={onClose}>Annulla</button><button className="primary" disabled={saving||photoPreparing}>{saving?'Salvataggio…':recipe?'Salva modifiche':isPreparation?'Salva preparazione':'Salva ricetta'}</button></div>
+  <div className="formGrid recipeNotes"><label className="span2">Procedimento<textarea rows={5} value={f.procedure} onChange={e=>setF({...f,procedure:e.target.value})}/></label><label className="span2">Note<textarea rows={3} value={f.notes} onChange={e=>setF({...f,notes:e.target.value})}/></label></div><div className="formActions recipeActions">{recipe&&<button type="button" className="ghost recipeDeleteButton" onClick={remove} disabled={saving||photoPreparing}><Trash2 size={16}/> Elimina ricetta</button>}<button type="button" className="ghost" onClick={onClose} disabled={saving}>Annulla</button><button className="primary" disabled={saving||photoPreparing}>{saving?'Salvataggio…':recipe?'Salva modifiche':isPreparation?'Salva preparazione':'Salva ricetta'}</button></div>
  </form></Modal>
 }

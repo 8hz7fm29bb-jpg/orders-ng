@@ -10,3 +10,7 @@
 .preparationTotalRow td{background:#f8f6ef;border-top:1px solid var(--line)}
 @media(max-width:760px){.recipeCollectionTabs{grid-template-columns:1fr;gap:8px}.preparationEditorRow{grid-template-columns:minmax(0,1fr) 100px}.preparationLineCost{grid-column:1}.preparationComposition{margin:0 14px 16px}.preparationYieldRow{grid-template-columns:1fr}.preparationEditorRow{padding:14px}.preparationHint{padding:0 14px 14px}}
 @media print{.preparationBadge{font-size:8pt!important;background:transparent!important;padding:0!important}.preparationUses td,.preparationTotalRow td{font-size:9pt!important;padding:2mm 3mm!important}.preparationLinkRow small{font-size:8pt!important}}
+
+.recipeActions .recipeDeleteButton{margin-right:auto;color:#b42318;border-color:#efc5c1}
+.recipeActions .recipeDeleteButton:hover{background:#fff1ef}
+@media(max-width:600px){.recipeActions .recipeDeleteButton{margin-right:0}}
