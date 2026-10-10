@@ -29,9 +29,9 @@ begin
   if expected<>jsonb_array_length(spec->'ingredients') or base_mass<=0 then raise exception 'Composizione sorgente incompleta: %',spec->>'name'; end if;
   select jsonb_agg(jsonb_build_object('ingredient_id',x->>'ingredient_id','unit_id',x->>'unit_id','quantity',(x->>'quantity')::numeric) order by x->>'ingredient_id') into source_signature from jsonb_array_elements(source_lines) x;
   insert into public.recipes(name,category,recipe_collection,standard_portions,yield_grams,yield_estimated,notes)
-  values(spec->>'name',spec->>'category','preparations',1,1000,true,'Base iniziale ricavata dagli ingredienti già registrati in «'||(spec->>'source')||'». Composizione e resa teorica (somma dei pesi, senza cali) da verificare in cucina. Confermare anche la quota di olio o burro attribuita alla base.') returning id into prep_id;
+  values(spec->>'name',spec->>'category','preparations',1,base_mass*100,true,'Base iniziale ricavata dagli ingredienti già registrati in «'||(spec->>'source')||'». Composizione e resa teorica (somma dei pesi, senza cali) da verificare in cucina. Confermare anche la quota di olio o burro attribuita alla base.') returning id into prep_id;
   insert into public.recipe_ingredients(recipe_id,ingredient_id,unit_id,quantity,sort_order)
-  select prep_id,(x->>'ingredient_id')::uuid,(x->>'unit_id')::uuid,(x->>'quantity')::numeric*1000/base_mass,(x->>'sort_order')::integer from jsonb_array_elements(source_lines) x;
+  select prep_id,(x->>'ingredient_id')::uuid,(x->>'unit_id')::uuid,(x->>'quantity')::numeric*100,(x->>'sort_order')::integer from jsonb_array_elements(source_lines) x;
   for candidate in select id from public.recipes where recipe_collection='banquets' and category=spec->>'category' and name ilike spec->>'pattern' and standard_portions=1 loop
    select jsonb_agg(jsonb_build_object('ingredient_id',ri.ingredient_id::text,'unit_id',ri.unit_id::text,'quantity',ri.quantity) order by ri.ingredient_id::text) into candidate_signature
    from public.recipe_ingredients ri where ri.recipe_id=candidate.id and ri.ingredient_id in (select (x->>'ingredient_id')::uuid from jsonb_array_elements(source_lines) x);
