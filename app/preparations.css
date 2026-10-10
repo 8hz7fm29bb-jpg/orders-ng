@@ -1,0 +1,12 @@
+.recipeCollectionTabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+.preparationHint{font-size:13px;color:var(--muted);line-height:1.55;padding:0 22px 16px;margin:0}
+.preparationComposition{margin:0 22px 22px}
+.preparationEditorRow{display:grid;grid-template-columns:minmax(0,1fr) 160px 155px 34px;gap:14px;align-items:end;padding:14px 22px;border-top:1px solid var(--line)}
+.preparationEditorRow input,.preparationEditorRow select{width:100%;height:44px;border:1px solid var(--line);border-radius:10px;padding:10px}
+.preparationLineCost{display:grid;gap:5px;padding-bottom:8px}.preparationLineCost small{font-size:11px;color:var(--muted)}
+.preparationYieldRow{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:16px}.preparationYieldStatus{display:flex;gap:10px;align-items:center}.preparationYieldStatus input{width:18px;height:18px;min-height:18px}
+.preparationBadge{font-size:11px;display:inline-block;color:#786012;background:#fff5d0;padding:5px 8px;border-radius:6px;margin-top:6px}
+.preparationUses td{color:var(--muted);font-size:12px}.preparationLinkRow td{background:#fffbec}.preparationLinkRow small{display:block;color:var(--muted);font-weight:400;font-size:11px}
+.preparationTotalRow td{background:#f8f6ef;border-top:1px solid var(--line)}
+@media(max-width:760px){.recipeCollectionTabs{grid-template-columns:1fr;gap:8px}.preparationEditorRow{grid-template-columns:minmax(0,1fr) 100px}.preparationLineCost{grid-column:1}.preparationComposition{margin:0 14px 16px}.preparationYieldRow{grid-template-columns:1fr}.preparationEditorRow{padding:14px}.preparationHint{padding:0 14px 14px}}
+@media print{.preparationBadge{font-size:8pt!important;background:transparent!important;padding:0!important}.preparationUses td,.preparationTotalRow td{font-size:9pt!important;padding:2mm 3mm!important}.preparationLinkRow small{font-size:8pt!important}}

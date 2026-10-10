@@ -1,3 +1,4 @@
+import { composedCost } from './preparations'
 import { createClient } from '@supabase/supabase-js'
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -15,11 +16,14 @@ export async function loadRecipes():Promise<{recipes:MenuRecipeOption[],error:st
  if(!supabase)return{recipes:[],error:'Supabase non disponibile'}
  const rr=await supabase.from('recipes').select('id,name,category,active,target_food_cost_percent,manual_sale_price,standard_portions').eq('active',true).eq('recipe_collection','banquets').order('name')
  if(rr.error)return{recipes:[],error:rr.error.message}
- const ir=await supabase.from('recipe_ingredients').select('recipe_id,quantity,unit:units(code),ingredient:ingredients(current_price,unit:units(code))')
- if(ir.error)return{recipes:[],error:ir.error.message}
- const costs=new Map<string,number>()
- for(const x of (ir.data||[]) as any[]){const q=Number(x.quantity||0),p=Number(x.ingredient?.current_price||0),from=x.unit?.code,to=x.ingredient?.unit?.code;let factor=1;if(from==='g'&&to==='kg')factor=.001;else if(from==='ml'&&to==='l')factor=.001;else if(from==='kg'&&to==='g')factor=1000;else if(from==='l'&&to==='ml')factor=1000;costs.set(x.recipe_id,(costs.get(x.recipe_id)||0)+(q*factor*p))}
- return{recipes:(rr.data||[]).map((r:any)=>{const portions=Math.max(Number(r.standard_portions||1),1),foodCost=(costs.get(r.id)||0)/portions,target=Number(r.target_food_cost_percent||0),manual=r.manual_sale_price==null?null:Number(r.manual_sale_price);return{id:r.id,name:r.name,category:r.category,active:r.active,sale_price:manual??(target>0?foodCost/(target/100):0)}}),error:null}
+ const [allRecipes, links]=await Promise.all([
+  supabase.from('recipes').select('id,name,category,yield_grams,standard_portions,recipe_ingredients(ingredient_id,quantity,unit_id,unit:units(code),ingredient:ingredients(id,name,current_price,unit:units(code)))'),
+  supabase.from('recipe_preparations').select('recipe_id,preparation_id,quantity_grams')
+ ])
+ if(allRecipes.error)return{recipes:[],error:allRecipes.error.message}
+ if(links.error)return{recipes:[],error:links.error.message}
+ const recipeMap=new Map((allRecipes.data||[]).map((r:any)=>[r.id,r]))
+ return{recipes:(rr.data||[]).map((r:any)=>{const full=recipeMap.get(r.id);const composition={...full,recipe_preparations:(links.data||[]).filter(l=>l.recipe_id===r.id).map(l=>({...l,preparation:recipeMap.get(l.preparation_id)}))};const portions=Math.max(Number(r.standard_portions||1),1),foodCost=composedCost(composition)/portions,target=Number(r.target_food_cost_percent||0),manual=r.manual_sale_price==null?null:Number(r.manual_sale_price);return{id:r.id,name:r.name,category:r.category,active:r.active,sale_price:manual??(target>0?foodCost/(target/100):0)}}),error:null}
 }
 
 export async function loadEventMenuByNumber(eventNumber:number,audience:'adult'|'baby'='adult'){
