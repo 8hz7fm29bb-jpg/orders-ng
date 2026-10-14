@@ -15,10 +15,18 @@ export function ingredientCost(line: BaseLine) {
   const factor = families[from] && families[from] === families[to] ? factors[from] / factors[to] : 1;
   return Number(line.quantity || 0) * factor * Number(line.ingredient?.current_price || 0);
 }
+/** The preparation composition defines its sample weight; legacy yields may be stale. */
+export function preparationYieldGrams(prep: Preparation): number {
+  const lines = prep.recipe_ingredients || [];
+  if (lines.length && lines.every(line => ['g', 'gr', 'kg'].includes(line.unit?.code || line.ingredient?.unit?.code || ''))) {
+    return lines.reduce((sum, line) => sum + Number(line.quantity || 0) * ((line.unit?.code || line.ingredient?.unit?.code) === 'kg' ? 1000 : 1), 0);
+  }
+  return Number(prep.yield_grams || 0);
+}
 export function preparationCost(link: PreparationLink) {
   const prep = link.preparation;
-  if (!prep || !(Number(prep.yield_grams) > 0)) return 0;
-  return (prep.recipe_ingredients || []).reduce((sum, line) => sum + ingredientCost(line), 0) * Number(link.quantity_grams) / Number(prep.yield_grams);
+  if (!prep || !(preparationYieldGrams(prep) > 0)) return 0;
+  return (prep.recipe_ingredients || []).reduce((sum, line) => sum + ingredientCost(line), 0) * Number(link.quantity_grams) / preparationYieldGrams(prep);
 }
 export function composedCost(recipe: ComposedRecipe) {
   return (recipe.recipe_ingredients || []).reduce((sum, line) => sum + ingredientCost(line), 0) +
@@ -27,8 +35,8 @@ export function composedCost(recipe: ComposedRecipe) {
 export function expandedIngredients(recipe: ComposedRecipe): BaseLine[] {
   return [...(recipe.recipe_ingredients || []), ...(recipe.recipe_preparations || []).flatMap(link => {
     const prep = link.preparation;
-    if (!prep || !(Number(prep.yield_grams) > 0)) return [];
-    return (prep.recipe_ingredients || []).map(line => ({ ...line, quantity: Number(line.quantity) * Number(link.quantity_grams) / Number(prep.yield_grams) }));
+    if (!prep || !(preparationYieldGrams(prep) > 0)) return [];
+    return (prep.recipe_ingredients || []).map(line => ({ ...line, quantity: Number(line.quantity) * Number(link.quantity_grams) / preparationYieldGrams(prep) }));
   })];
 }
 export type PreparationNeed = { preparation: Preparation; quantity_grams: number; uses: { name: string; portions: number; grams: number }[] }

@@ -18,7 +18,31 @@ assert.equal(preparationNeeds([{id:'missing',name:'No recipe',quantity:20}],reci
 const multi={...recipe,standard_portions:10,recipe_preparations:[{preparation_id:'cream',quantity_grams:250,preparation:cream}]}
 assert.equal(preparationNeeds([{id:'fruit',name:'Fruit',quantity:20}],new Map([['fruit',multi]]))[0].quantity_grams,500)
 const changed={...recipe,recipe_preparations:[{...recipe.recipe_preparations[0],preparation:{...cream,yield_grams:800}}]}
-assert.ok(composedCost(changed)>composedCost(recipe),'Changing the yield updates linked cost')
-assert.equal(expandedIngredients(changed)[1].quantity,20)
+assert.equal(composedCost(changed),composedCost(recipe),'Hidden legacy yield must not override the composition')
+assert.equal(expandedIngredients(changed)[1].quantity,16)
 assert.equal(composedCost({standard_portions:1,recipe_ingredients:[line('oil',20,10,'ml','l')]}),.2)
 console.log('Preparations: shared totals, preserved food cost, expanded ingredients, batch portions, changed yield and unit conversion passed.')
+
+{
+const assert = require('node:assert/strict');
+const ts = require('typescript');
+const fs = require('node:fs');
+const vm = require('node:vm');
+const context = { exports: {} };
+vm.runInNewContext(ts.transpileModule(fs.readFileSync('lib/preparations.ts','utf8'), {compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText, context);
+const {preparationYieldGrams, expandedIngredients, preparationCost} = context.exports;
+const line = (quantity, code='g') => ({ingredient_id:String(quantity), quantity, unit_id:null, unit:{code}, ingredient:{id:String(quantity),name:'Test',current_price:10,unit:{code:'kg'}}});
+const prep = {id:'cream', name:'Crema diplomatica', category:'Dessert', yield_grams:2500, recipe_ingredients:[16,5,2,2].map(q=>line(q))};
+assert.equal(preparationYieldGrams(prep),25);
+const link = {preparation_id:prep.id, quantity_grams:4950, preparation:prep};
+const expanded = expandedIngredients({standard_portions:1,recipe_preparations:[link]});
+assert.equal(expanded[0].quantity,3168);
+assert.equal(expanded[1].quantity,990);
+assert.equal(expanded[2].quantity,396);
+assert.equal(expanded.reduce((s,l)=>s+l.quantity,0),4950);
+assert.ok(Math.abs(preparationCost(link)-49.5)<1e-9);
+assert.equal(preparationYieldGrams({...prep, recipe_ingredients:[line(.016,'kg'),line(9)]}),25);
+assert.equal(preparationYieldGrams({...prep, recipe_ingredients:[line(2,'pz')]}),2500);
+console.log('Preparation regression tests passed');
+
+}
