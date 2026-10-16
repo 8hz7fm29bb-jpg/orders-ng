@@ -46,7 +46,7 @@
 .eventForm .eventTopRow input[type="date"]{-webkit-appearance:none;appearance:none}
 .eventForm .eventTopRow input[type="date"]::-webkit-date-and-time-value{min-width:0;text-align:left}
 
-@media screen and (min-width:768px) and (max-width:1366px){
+@media screen and (min-width:701px){
  .eventForm .eventTopRow input[type="date"]{text-align:center;line-height:42px}
  .eventForm .eventTopRow input[type="date"]::-webkit-date-and-time-value{text-align:center;margin:0;line-height:42px}
  .eventForm .eventTopRow input[type="date"]::-webkit-datetime-edit{padding:0;text-align:center}
