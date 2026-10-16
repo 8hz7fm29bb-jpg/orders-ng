@@ -32,14 +32,18 @@ export function RchConsumptions({
   onCreated,
   associationsOnly = false,
   onAssociations,
+  readOnly = false,
+  mappingReadOnly = false,
 }: {
   ingredients: Ingredient[];
   units: Unit[];
   onCreated: () => Promise<void>;
+  readOnly?: boolean;
+  mappingReadOnly?: boolean;
   associationsOnly?: boolean;
   onAssociations?: () => void;
 }) {
-  const [tab, setTab] = useState(associationsOnly ? "associations" : "import"),
+  const [tab, setTab] = useState(associationsOnly ? "associations" : readOnly ? "archive" : "import"),
     [mappings, setMappings] = useState<RchMapping[]>([]),
     [imports, setImports] = useState<RchImport[]>([]),
     [rows, setRows] = useState<RchRow[]>([]),
@@ -250,7 +254,7 @@ export function RchConsumptions({
         {byId.get(m.rch_id)?.unit_code !== m.unit_code && (
           <button
             className="secondary"
-            disabled={busy}
+            disabled={busy || readOnly || mappingReadOnly}
             onClick={() =>
               change(m, { unit_code: m.unit_code, ingredient_id: null })
             }
@@ -260,7 +264,7 @@ export function RchConsumptions({
         )}
         <select
           aria-label={`Associazione ${m.name}`}
-          disabled={busy || m.excluded}
+          disabled={busy || readOnly || mappingReadOnly || m.excluded}
           value={m.ingredient_id || ""}
           onChange={(e) => change(m, { ingredient_id: e.target.value || null })}
         >
@@ -278,7 +282,7 @@ export function RchConsumptions({
           <input
             type="checkbox"
             checked={m.excluded}
-            disabled={busy}
+            disabled={busy || readOnly || mappingReadOnly}
             onChange={(e) => change(m, { excluded: e.target.checked })}
           />{" "}
           Escluso
@@ -286,7 +290,7 @@ export function RchConsumptions({
         {!m.excluded && !m.ingredient_id && (
           <button
             className="secondary"
-            disabled={busy}
+            disabled={busy || readOnly || mappingReadOnly}
             onClick={() => createIngredient(m)}
           >
             Crea ingrediente
@@ -312,7 +316,7 @@ export function RchConsumptions({
       {!associationsOnly && <div className="toolbar">
         <div className="categoryTabs">
           {[
-            ["import", "Importa file"],
+            ...(!readOnly ? [["import", "Importa file"]] : []),
             ["archive", "Archivio"],
           ].map(([id, label]) => (
             <button
@@ -346,7 +350,7 @@ export function RchConsumptions({
           <label>
             File RCH
             <input
-              disabled={busy}
+              disabled={busy || readOnly}
               type="file"
               accept=".numbers,.xlsx,.xls,.csv"
               onChange={(e) => {
@@ -385,13 +389,13 @@ export function RchConsumptions({
             <p>Le quantità positive non vengono considerate come consumo.</p>
           )}
           <div className="formActions">
-            <button className="secondary" disabled={busy} onClick={seed}>
+            <button className="secondary" disabled={busy || readOnly} onClick={seed}>
               Carica modello iniziale senza quantità
             </button>
             <button
               className="primary"
               disabled={
-                busy || !rows.length || unresolved.length > 0 || !from || !to
+                readOnly || busy || !rows.length || unresolved.length > 0 || !from || !to
               }
               onClick={save}
             >
@@ -497,7 +501,7 @@ export function RchConsumptions({
                         </button>
                         <button
                           className="secondary"
-                          disabled={busy}
+                          disabled={busy || readOnly}
                           onClick={() => {
                             setReplace(i.id);
                             setFrom(i.period_from);
@@ -511,7 +515,7 @@ export function RchConsumptions({
                         </button>
                         <button
                           className="secondary"
-                          disabled={busy}
+                          disabled={busy || readOnly}
                           onClick={() =>
                             run(async () => {
                               if (i.rows.some((r) => !valid(r)))
@@ -547,7 +551,7 @@ export function RchConsumptions({
                         </button>
                         <button
                           className="ghost"
-                          disabled={busy}
+                          disabled={busy || readOnly}
                           onClick={() =>
                             run(async () => {
                               if (!confirm("Eliminare questo resoconto?"))
