@@ -45,3 +45,9 @@
 .eventForm .eventTopRow input,.eventForm .eventTopRow select{display:block;min-width:0;max-width:100%;width:100%;height:44px;min-height:44px;max-height:44px;box-sizing:border-box;font-size:16px;line-height:normal;margin:0}
 .eventForm .eventTopRow input[type="date"]{-webkit-appearance:none;appearance:none}
 .eventForm .eventTopRow input[type="date"]::-webkit-date-and-time-value{min-width:0;text-align:left}
+
+@media screen and (min-width:768px) and (max-width:1366px){
+ .eventForm .eventTopRow input[type="date"]{text-align:center;line-height:42px}
+ .eventForm .eventTopRow input[type="date"]::-webkit-date-and-time-value{text-align:center;margin:0;line-height:42px}
+ .eventForm .eventTopRow input[type="date"]::-webkit-datetime-edit{padding:0;text-align:center}
+}
