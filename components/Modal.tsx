@@ -6,7 +6,7 @@ import { Save, Trash2, X } from 'lucide-react'
 import { EventMenuEditor } from '@/components/EventMenuEditor'
 import { supabase } from '@/lib/supabase'
 
-export function Modal({ title, children, onClose, wide = false }: { title: string; children: React.ReactNode; onClose: () => void; wide?: boolean }) {
+export function Modal({ title, children, onClose, wide = false, actions }: { actions?: React.ReactNode; title: string; children: React.ReactNode; onClose: () => void; wide?: boolean }) {
   const readOnly=useContext(ReadOnlyContext)
   const eventMatch = title.match(/^Evento #(\d+)/)
   const eventNumber = eventMatch ? Number(eventMatch[1]) : null
@@ -33,6 +33,7 @@ export function Modal({ title, children, onClose, wide = false }: { title: strin
           <h2>{title}</h2>
           <button className="iconButton" onClick={onClose} aria-label="Chiudi"><X size={20} /></button>
         </div>
+        {actions}
         <fieldset disabled={readOnly} style={{border:0,padding:0,margin:0,minWidth:0}}>{children}
         {eventNumber !== null && <EventMenuEditor eventNumber={eventNumber} />}</fieldset>
         {isEvent && !readOnly && (
