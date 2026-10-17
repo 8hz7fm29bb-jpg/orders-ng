@@ -77,17 +77,17 @@ export async function createEventPdf(request: EventPdfRequest, adult: EventMenuL
   const detailY=infoY
   let bodyTop=detailY+14
   const leftWidth=hasBaby||dedicated.length?108:178, rightX=142, rightWidth=58
-  const gap=(size:number)=>Math.max(.7,(size-8)*.7+.7)
-  const groupHeight=(list:ReturnType<typeof groups>,width:number,size:number)=>list.reduce((h,[category,items])=>h+wrap(category.toUpperCase(),width,8,'helvetica').length*3.2+2+items.reduce((n,item)=>n+wrap(item,width,size).length*size*.4+gap(size),0)+gap(size)+3,0)
+  const gap=(size:number)=>Math.max(.4,(size-8)*.3+.4)
+  const groupHeight=(list:ReturnType<typeof groups>,width:number,size:number)=>list.reduce((h,[category,items])=>h+wrap(category.toUpperCase(),width,8,'helvetica').length*3.2+1.5+items.reduce((n,item)=>n+wrap(item,width,size).length*size*.4+gap(size),0)+gap(size)+1.5,0)
   let size=11
   let leftHeight=0,rightHeight=0
   for(;size>=8;size-=.5){
     leftHeight=groupHeight(adults,leftWidth,size)+7
     rightHeight=(hasBaby?groupHeight(babies,rightWidth,size)+7:0)+(dedicated.length?12+dedicated.reduce((h,f)=>h+wrap(`${f.label}: ${dedicatedMenuCount(e,f.key)}`,rightWidth,size,'helvetica').length*size*.4+2,0):0)
-    if(bodyTop+Math.max(leftHeight,rightHeight)+26<=conditionsTop-9)break
+    if(bodyTop+Math.max(leftHeight,rightHeight)+18<=conditionsTop-9)break
   }
   if(size<8)throw new Error('Il preventivo supera lo spazio di una pagina. Riduci la lunghezza del menu o dei dati cliente e riprova. Nessun contenuto è stato tagliato.')
-  const remainingSpace=conditionsTop-9-(bodyTop+Math.max(leftHeight,rightHeight)+26)
+  const remainingSpace=conditionsTop-9-(bodyTop+Math.max(leftHeight,rightHeight)+18)
   const extraHeaderSpace=Math.min(12,Math.max(0,remainingSpace/3))
   bodyTop+=extraHeaderSpace
   doc.setFont('times','normal');doc.setFontSize(detailSize)
@@ -96,9 +96,9 @@ export async function createEventPdf(request: EventPdfRequest, adult: EventMenuL
   const drawGroups=(list:ReturnType<typeof groups>,x:number,y:number,width:number)=>{
     for(const [category,items] of list){
       const cat=wrap(category.toUpperCase(),width,8,'helvetica')
-      text(cat,x,y,8,'helvetica',gold);y+=cat.length*3.2+2
+      text(cat,x,y,8,'helvetica',gold);y+=cat.length*3.2+1.5
       for(const item of items){const rows=wrap(item,width,size);text(rows,x,y,size,'times');y+=rows.length*size*.4+gap(size)}
-      y+=gap(size)+3
+      y+=gap(size)+1.5
     }
     return y
   }
@@ -110,12 +110,12 @@ export async function createEventPdf(request: EventPdfRequest, adult: EventMenuL
     rightEnd+=5;text('MENU DEDICATI',rightX,rightEnd,9,'helvetica',gold);rightEnd+=7
     for(const f of dedicated){const rows=wrap(`${f.label}: ${dedicatedMenuCount(e,f.key)}`,rightWidth,size,'helvetica');text(rows,rightX,rightEnd,size);rightEnd+=rows.length*size*.4+2}
   }
-  const priceY=Math.max(leftEnd,rightEnd)+5
-  rule(priceY);text('PREZZO PER PERSONA',16,priceY+7,8,'helvetica',gold)
-  text(`Adulti  € ${money(e.price_per_adult)}`,16,priceY+14,11,'times')
-  if(hasBaby)text(`Baby  € ${money(e.price_per_baby)}`,rightX,priceY+14,11,'times')
+  const priceY=Math.max(leftEnd,rightEnd)+3
+  rule(priceY);text('PREZZO PER PERSONA',16,priceY+5,8,'helvetica',gold)
+  text(`Adulti  € ${money(e.price_per_adult)}`,16,priceY+10,11,'times')
+  if(hasBaby)text(`Baby  € ${money(e.price_per_baby)}`,rightX,priceY+10,11,'times')
   // Fixed bottom placement, independent of the menu length.
-  rule(priceY+20)
+  rule(priceY+15)
   text('CONDIZIONI DEL PREVENTIVO',16,conditionsTop+1,8,'helvetica',gold)
   let cy=conditionsTop+7
   clauses.forEach((rows,i)=>{text(`${i+1}.`,16,cy,7.2);text(rows,21,cy,7.2);cy+=rows.length*3.05+1.5})
