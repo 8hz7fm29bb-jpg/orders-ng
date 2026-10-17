@@ -45,7 +45,7 @@ export async function createEventPdf(request: EventPdfRequest, adult: EventMenuL
   // Reserve the entire conditions block before measuring the menu.
   const clauses=conditions.map(c=>wrap(c,171,7.2,'helvetica'))
   const clauseHeight=clauses.reduce((h,rows)=>h+rows.length*3.05+1.5,0)
-  const conditionsTop=277-clauseHeight-7
+  const conditionsTop=281-clauseHeight-5
   const image=doc.getImageProperties(logo)
   const logoHeight=Math.min(27,65*image.height/image.width)
   const logoWidth=logoHeight*image.width/image.height
@@ -84,10 +84,10 @@ export async function createEventPdf(request: EventPdfRequest, adult: EventMenuL
   for(;size>=8;size-=.5){
     leftHeight=groupHeight(adults,leftWidth,size)+7
     rightHeight=(hasBaby?groupHeight(babies,rightWidth,size)+7:0)+(dedicated.length?12+dedicated.reduce((h,f)=>h+wrap(`${f.label}: ${dedicatedMenuCount(e,f.key)}`,rightWidth,size,'helvetica').length*size*.4+2,0):0)
-    if(bodyTop+Math.max(leftHeight,rightHeight)+18<=conditionsTop-9)break
+    if(bodyTop+Math.max(leftHeight,rightHeight)+20<=conditionsTop-3)break
   }
   if(size<8)throw new Error('Il preventivo supera lo spazio di una pagina. Riduci la lunghezza del menu o dei dati cliente e riprova. Nessun contenuto è stato tagliato.')
-  const remainingSpace=conditionsTop-9-(bodyTop+Math.max(leftHeight,rightHeight)+18)
+  const remainingSpace=conditionsTop-3-(bodyTop+Math.max(leftHeight,rightHeight)+20)
   const extraHeaderSpace=Math.min(12,Math.max(0,remainingSpace/3))
   bodyTop+=extraHeaderSpace
   doc.setFont('times','normal');doc.setFontSize(detailSize)
@@ -112,12 +112,12 @@ export async function createEventPdf(request: EventPdfRequest, adult: EventMenuL
   }
   const priceY=Math.max(leftEnd,rightEnd)+3
   rule(priceY);text('PREZZO PER PERSONA',16,priceY+5,8,'helvetica',gold)
-  text(`Adulti  € ${money(e.price_per_adult)}`,16,priceY+10,11,'times')
-  if(hasBaby)text(`Baby  € ${money(e.price_per_baby)}`,rightX,priceY+10,11,'times')
+  text(`Adulti  € ${money(e.price_per_adult)}`,16,priceY+12,11,'times')
+  if(hasBaby)text(`Baby  € ${money(e.price_per_baby)}`,rightX,priceY+12,11,'times')
   // Fixed bottom placement, independent of the menu length.
-  rule(priceY+15)
+  rule(priceY+17)
   text('CONDIZIONI DEL PREVENTIVO',16,conditionsTop+1,8,'helvetica',gold)
-  let cy=conditionsTop+7
+  let cy=conditionsTop+5
   clauses.forEach((rows,i)=>{text(`${i+1}.`,16,cy,7.2);text(rows,21,cy,7.2);cy+=rows.length*3.05+1.5})
   doc.setDrawColor(218,214,206);doc.line(16,284,194,284)
   doc.setCharSpace(0);doc.setFont('helvetica','normal');doc.setFontSize(6)
