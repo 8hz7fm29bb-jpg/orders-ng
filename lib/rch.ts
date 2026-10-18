@@ -10,6 +10,8 @@ export type RchMapping = {
   unit_code: number;
   ingredient_id: string | null;
   excluded: boolean;
+  grams_per_piece?: number | null;
+  target_unit?: string | null;
 };
 export type RchImport = {
   id: string;
@@ -92,8 +94,9 @@ export function parseStock(rows: unknown[][]): RchRow[] {
 }
 export async function readRchFile(file: File) {
   if (file.size > 10 * 1024 * 1024) throw new Error("Il file supera 10 MB.");
+  const buffer = await file.arrayBuffer();
   const XLSX = await import("xlsx");
-  const book = XLSX.read(await file.arrayBuffer(), { type: "array" });
+  const book = XLSX.read(buffer, { type: "array" });
   const sheet =
     book.SheetNames.find((n) => n.toLowerCase().trim() === "stock") ||
     book.SheetNames.find((n) => {
@@ -119,19 +122,43 @@ export function compatible(code: number, unit?: string | null) {
         ? unit === "pz"
         : false;
 }
+export function needsPieceWeight(code: number, unit?: string | null) {
+  return (code === 1 && unit === "pz") ||
+    (code === 4 && ["kg", "g", "gr"].includes(unit || ""));
+}
+export function mappingCompatible(mapping: RchMapping, unit?: string | null) {
+  return compatible(mapping.unit_code, unit) ||
+    (needsPieceWeight(mapping.unit_code, unit) && mapping.target_unit === unit &&
+      Number.isFinite(mapping.grams_per_piece) && Number(mapping.grams_per_piece) > 0);
+}
+export function exactRchMatch(row: Pick<RchRow, "name" | "unit_code">, ingredients: {
+  id: string; name: string; active: boolean; unit?: { code: string } | null;
+}[]) {
+  const matches = ingredients.filter(i => i.active &&
+    normalizeName(i.name) === normalizeName(row.name) && compatible(row.unit_code, i.unit?.code));
+  return matches.length === 1 ? matches[0].id : null;
+}
+export function validRchMapping(row: RchRow, mapping: RchMapping | undefined,
+  ingredient?: { active: boolean; unit?: { code: string } | null }) {
+  if (mapping?.excluded) return true;
+  return Boolean(mapping && ingredient?.active && mapping.unit_code === row.unit_code &&
+    mappingCompatible(mapping, ingredient.unit?.code));
+}
 export function rchConsumption(report: RchImport) {
   const mapping = new Map(report.mappings.map((m) => [m.rch_id, m]));
   return report.rows.flatMap((r) => {
     const m = mapping.get(r.rch_id);
-    return r.quantity < 0 && m?.ingredient_id && !m.excluded
-      ? [
-          {
-            id: m.ingredient_id,
-            name: r.name,
-            unit: r.unit_code === 1 ? "kg" : r.unit_code === 3 ? "l" : "pz",
-            quantity: -r.quantity / (r.unit_code === 4 ? 1 : 1000),
-          },
-        ]
-      : [];
+    if (r.quantity >= 0 || !m?.ingredient_id || m.excluded) return [];
+    if (needsPieceWeight(r.unit_code, m.target_unit)) {
+      if (!mappingCompatible({ ...m, unit_code: r.unit_code }, m.target_unit))
+        throw new Error(`Conversione da confermare per ${r.name}.`);
+      const weight = Number(m.grams_per_piece);
+      return [{ id: m.ingredient_id, name: r.name,
+        unit: r.unit_code === 1 ? "pz" : "kg",
+        quantity: r.unit_code === 1 ? -r.quantity / weight : -r.quantity * weight / 1000 }];
+    }
+    return [{ id: m.ingredient_id, name: r.name,
+      unit: r.unit_code === 1 ? "kg" : r.unit_code === 3 ? "l" : "pz",
+      quantity: -r.quantity / (r.unit_code === 4 ? 1 : 1000) }];
   });
 }

@@ -3,6 +3,10 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import {
   compatible,
+  exactRchMatch,
+  needsPieceWeight,
+  mappingCompatible,
+  validRchMapping,
   normalizeName,
   readRchFile,
   rchUnit,
@@ -52,6 +56,7 @@ export function RchConsumptions({
     [to, setTo] = useState(""),
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState(""),
+    [failed, setFailed] = useState(false),
     [query, setQuery] = useState(""),
     [onlyPending, setOnlyPending] = useState(false),
     [detail, setDetail] = useState<RchImport | null>(null),
@@ -70,10 +75,12 @@ export function RchConsumptions({
   }, []);
   async function run(fn: () => Promise<void>) {
     setBusy(true);
+    setFailed(false);
     setMessage("");
     try {
       await fn();
     } catch (e) {
+      setFailed(true);
       setMessage(e instanceof Error ? e.message : "Operazione non riuscita.");
     } finally {
       setBusy(false);
@@ -91,14 +98,26 @@ export function RchConsumptions({
           rch_id: r.rch_id,
           name: r.name,
           unit_code: r.unit_code,
-          ingredient_id: null,
+          ingredient_id: exactRchMatch(r, ingredients),
           excluded: /^vin[oi]\b/i.test(r.name),
         }));
-      if (newRows.length) {
+      if (newRows.length && !mappingReadOnly) {
         const r = await supabase!
           .from("rch_mappings")
           .upsert(newRows, { onConflict: "rch_id", ignoreDuplicates: true });
         if (r.error) throw new Error(r.error.message);
+        await refresh();
+      }
+      if (!mappingReadOnly) {
+        for (const row of parsed) {
+          const saved = existing.get(row.rch_id);
+          if (!saved || saved.excluded || saved.ingredient_id || saved.unit_code !== row.unit_code) continue;
+          const ingredientId = exactRchMatch(row, ingredients);
+          if (!ingredientId) continue;
+          const result = await supabase!.from("rch_mappings").update({ ingredient_id: ingredientId })
+            .eq("rch_id", row.rch_id).is("ingredient_id", null).eq("excluded", false);
+          if (result.error) throw new Error(result.error.message);
+        }
         await refresh();
       }
       setMessage(
@@ -125,7 +144,7 @@ export function RchConsumptions({
       const r = await supabase!.from("rch_mappings").upsert(
         catalog.map((r) => ({
           ...r,
-          ingredient_id: null,
+          ingredient_id: exactRchMatch(r, ingredients),
           excluded: /^vin[oi]\b/i.test(r.name),
         })),
         { onConflict: "rch_id", ignoreDuplicates: true },
@@ -140,22 +159,20 @@ export function RchConsumptions({
   }
   const byId = new Map(mappings.map((m) => [m.rch_id, m]));
   const valid = (r: RchRow) => {
-    const m = byId.get(r.rch_id),
-      i = ingredients.find((i) => i.id === m?.ingredient_id);
-    return (
-      m?.unit_code === r.unit_code &&
-      (m.excluded || Boolean(i && compatible(r.unit_code, i.unit?.code)))
-    );
+    const m = byId.get(r.rch_id);
+    return validRchMapping(r, m, ingredients.find(i => i.id === m?.ingredient_id));
   };
   const unresolved = rows.filter((r) => !valid(r));
   async function save() {
     await run(async () => {
       if (!from || !to || from > to || !rows.length)
         throw new Error("Indica un periodo valido e carica il file.");
-      if (unresolved.length)
-        throw new Error(
-          "Completa le associazioni o escludi tutte le voci evidenziate.",
-        );
+      if (unresolved.length) {
+        setOnlyPending(true);
+        throw new Error(`${unresolved.length} ingredienti da verificare: ${unresolved.slice(0, 5).map(r => r.name).join(", ")}. Completa le associazioni o escludili.`);
+      }
+      const overlap = imports.find(i => i.id !== replace && i.period_from <= to && i.period_to >= from);
+      if (overlap) throw new Error(`Il periodo si sovrappone al resoconto ${overlap.filename} (${overlap.period_from.split("-").reverse().join("/")} – ${overlap.period_to.split("-").reverse().join("/")}). Apri Archivio e premi Sostituisci, oppure scegli un periodo diverso.`);
       const canonical = JSON.stringify(
         rows.map((r) => [r.rch_id, r.unit_code, r.quantity]),
       );
@@ -188,8 +205,9 @@ export function RchConsumptions({
             .update(payload)
             .eq("id", replace)
             .select()
+            .abortSignal(AbortSignal.timeout(20000))
             .single()
-        : await supabase!.from("rch_imports").insert(payload).select().single();
+        : await supabase!.from("rch_imports").insert(payload).select().abortSignal(AbortSignal.timeout(20000)).single();
       if (r.error)
         throw new Error(
           r.error.code === "23505"
@@ -198,7 +216,7 @@ export function RchConsumptions({
               ? "Il periodo si sovrappone a un resoconto già importato. Scegli Sostituisci dall’archivio."
               : r.error.message,
         );
-      await refresh();
+      setImports(old => [r.data as RchImport, ...old.filter(i => i.id !== r.data.id)]);
       setRows([]);
       setFilename("");
       setReplace("");
@@ -243,12 +261,6 @@ export function RchConsumptions({
     });
   }
   function editor(m: RchMapping) {
-    const suggestions = ingredients.filter(
-      (i) => i.active && compatible(m.unit_code, i.unit?.code),
-    );
-    const exact = suggestions.filter(
-      (i) => normalizeName(i.name) === normalizeName(m.name),
-    );
     return (
       <div className="rchAssociation">
         {byId.get(m.rch_id)?.unit_code !== m.unit_code && (
@@ -256,28 +268,18 @@ export function RchConsumptions({
             className="secondary"
             disabled={busy || readOnly || mappingReadOnly}
             onClick={() =>
-              change(m, { unit_code: m.unit_code, ingredient_id: null })
+              change(m, { unit_code: m.unit_code, ingredient_id: null, grams_per_piece: null, target_unit: null })
             }
           >
             Conferma nuova unità
           </button>
         )}
-        <select
-          aria-label={`Associazione ${m.name}`}
-          disabled={busy || readOnly || mappingReadOnly || m.excluded}
-          value={m.ingredient_id || ""}
-          onChange={(e) => change(m, { ingredient_id: e.target.value || null })}
-        >
-          <option value="">
-            Da associare
-            {exact.length === 1 ? ` — suggerito: ${exact[0].name}` : ""}
-          </option>
-          {suggestions.map((i) => (
-            <option key={i.id} value={i.id}>
-              {i.name} ({i.unit?.code})
-            </option>
-          ))}
-        </select>
+        <RchIngredientSelect
+          key={`${m.rch_id}:${m.ingredient_id}:${m.unit_code}:${m.grams_per_piece}:${m.target_unit}`}
+          mapping={m} ingredients={ingredients}
+          disabled={busy || readOnly || mappingReadOnly || m.excluded || byId.get(m.rch_id)?.unit_code !== m.unit_code}
+          onSave={patch => change(m, patch)}
+        />
         <label>
           <input
             type="checkbox"
@@ -299,7 +301,7 @@ export function RchConsumptions({
       </div>
     );
   }
-  const isPending = (m: RchMapping) => !m.excluded && !ingredients.some(i => i.id === m.ingredient_id && i.active && compatible(m.unit_code, i.unit?.code));
+  const isPending = (m: RchMapping) => !m.excluded && (byId.get(m.rch_id)?.unit_code !== m.unit_code || !ingredients.some(i => i.id === m.ingredient_id && i.active && mappingCompatible(m, i.unit?.code)));
   const pending = mappings.filter(isPending).length;
   const associated = mappings.filter(m => !m.excluded && !isPending(m)).length;
   const excluded = mappings.filter(m => m.excluded).length;
@@ -334,8 +336,8 @@ export function RchConsumptions({
         </div>
       </div>
       }
-      {message && (
-        <div className="authInfoBox" role="status">
+      {message && tab !== "import" && (
+        <div className={failed ? "errorBox" : "authInfoBox"} role={failed ? "alert" : "status"}>
           {message}
         </div>
       )}
@@ -355,8 +357,8 @@ export function RchConsumptions({
               accept=".numbers,.xlsx,.xls,.csv"
               onChange={(e) => {
                 const f = e.target.files?.[0];
-                if (f) openFile(f);
-                e.target.value = "";
+                const input = e.currentTarget;
+                if (f) void openFile(f).finally(() => { input.value = ""; });
               }}
             />
           </label>
@@ -388,6 +390,9 @@ export function RchConsumptions({
           {rows.some((r) => r.quantity > 0) && (
             <p>Le quantità positive non vengono considerate come consumo.</p>
           )}
+          {message && <div className={failed ? "errorBox" : "authInfoBox"} role={failed ? "alert" : "status"}>{message}</div>}
+          {busy && <p role="status">Operazione in corso…</p>}
+          {unresolved.length > 0 && <p className="rchHint">{unresolved.length} ingredienti da verificare prima del salvataggio.</p>}
           <div className="formActions">
             <button className="secondary" disabled={busy || readOnly} onClick={seed}>
               Carica modello iniziale senza quantità
@@ -395,7 +400,7 @@ export function RchConsumptions({
             <button
               className="primary"
               disabled={
-                readOnly || busy || !rows.length || unresolved.length > 0 || !from || !to
+                readOnly || busy
               }
               onClick={save}
             >
@@ -423,6 +428,7 @@ export function RchConsumptions({
               onChange={(e) => setQuery(e.target.value)}
             />
           </div>
+          {tab === "import" && <label className="cartePendingFilter"><input type="checkbox" checked={onlyPending} onChange={e => setOnlyPending(e.target.checked)} /> Solo da associare</label>}
           {tab === "associations" && (
             <>
               <p className="rchHint">
@@ -617,4 +623,41 @@ export function RchConsumptions({
       )}
     </>
   );
+}
+
+function RchIngredientSelect({ mapping: m, ingredients, disabled, onSave }: {
+  mapping: RchMapping; ingredients: Ingredient[]; disabled: boolean;
+  onSave: (patch: Partial<RchMapping>) => Promise<void>;
+}) {
+  const [selected, setSelected] = useState(m.ingredient_id || "");
+  const [weight, setWeight] = useState(m.grams_per_piece ? String(m.grams_per_piece) : "");
+  const unit = ingredients.find(i => i.id === selected)?.unit?.code;
+  const needsWeight = needsPieceWeight(m.unit_code, unit);
+  const options = ingredients.filter(i => i.active).sort((a, b) =>
+    Number(normalizeName(b.name) === normalizeName(m.name)) - Number(normalizeName(a.name) === normalizeName(m.name)) || a.name.localeCompare(b.name, "it"));
+  const grams = Number(weight.replace(",", "."));
+  return <>
+    <select aria-label={`Associazione ${m.name}`} disabled={disabled} value={selected}
+      onChange={e => {
+        const id = e.target.value;
+        setSelected(id); setWeight("");
+        const target = ingredients.find(i => i.id === id)?.unit?.code;
+        void onSave({ ingredient_id: id || null, grams_per_piece: null, target_unit: needsPieceWeight(m.unit_code, target) ? target || null : null });
+      }}>
+      <option value="">Da associare</option>
+      {options.map(i => <option key={i.id} value={i.id}
+        disabled={!compatible(m.unit_code, i.unit?.code) && !needsPieceWeight(m.unit_code, i.unit?.code)}>
+        {i.name} ({i.unit?.code || "—"}){needsPieceWeight(m.unit_code, i.unit?.code) ? " — indica peso per pezzo" : !compatible(m.unit_code, i.unit?.code) ? " — unità non compatibile" : ""}
+      </option>)}
+    </select>
+    {needsWeight && <div className="rchConversion">
+      <label>Peso di 1 pezzo (g)
+        <input aria-label={`Peso di 1 pezzo di ${m.name} in grammi`} inputMode="decimal"
+          value={weight} disabled={disabled} onChange={e => setWeight(e.target.value)} placeholder="Es. 50" />
+      </label>
+      <button className="secondary" disabled={disabled || !Number.isFinite(grams) || grams <= 0}
+        onClick={() => void onSave({ ingredient_id: selected, grams_per_piece: grams, target_unit: unit })}>Salva conversione</button>
+      <small>1 pz = {Number.isFinite(grams) && grams > 0 ? grams.toLocaleString("it-IT") : "…"} g. La conversione sarà conservata per i prossimi file.</small>
+    </div>}
+  </>;
 }

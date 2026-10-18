@@ -81,3 +81,31 @@ assert.equal(c.length, 2);
 console.log(
   "PASS: real Numbers file, deduplication, conflict rejection, unit validation, conversions, wine exclusions, non-consumption balances.",
 );
+// Saved mappings remain reusable across compatible units; never guess ambiguous names.
+const { exactRchMatch, needsPieceWeight, mappingCompatible, validRchMapping } = context.exports;
+const row = { rch_id: 10, name: 'Nòci', unit_code: 1, quantity: -500 };
+const ingredient = { id: 'noci', name: 'Noci', active: true, unit: { code: 'kg' } };
+assert.equal(exactRchMatch(row, [ingredient]), 'noci');
+assert.equal(exactRchMatch(row, [ingredient, { ...ingredient, id: 'duplicate' }]), null);
+assert.equal(exactRchMatch(row, [{ ...ingredient, unit: { code: 'pz' } }]), null);
+assert.equal(exactRchMatch(row, [{ ...ingredient, active: false }]), null);
+const base = { rch_id: 10, name: 'Noci', unit_code: 1, ingredient_id: 'noci', excluded: false };
+assert.equal(validRchMapping(row, base, ingredient), true);
+assert.equal(validRchMapping(row, { ...base, unit_code: 4, excluded: true }), true);
+assert.equal(validRchMapping(row, { ...base, unit_code: 4 }, ingredient), false);
+assert.equal(validRchMapping(row, base, { ...ingredient, active: false }), false);
+assert.equal(needsPieceWeight(4, 'kg'), true);
+assert.equal(needsPieceWeight(3, 'kg'), false);
+const conversion = { ...base, grams_per_piece: 50, target_unit: 'pz' };
+assert.equal(mappingCompatible(conversion, 'pz'), true);
+assert.equal(mappingCompatible({ ...conversion, grams_per_piece: 0 }, 'pz'), false);
+assert.equal(mappingCompatible({ ...conversion, grams_per_piece: Infinity }, 'pz'), false);
+assert.equal(mappingCompatible(conversion, 'g'), true);
+const pieceResult = rchConsumption({ rows: [row], mappings: [conversion] });
+assert.equal(pieceResult[0].quantity, 10);
+assert.equal(pieceResult[0].unit, 'pz');
+const weightResult = rchConsumption({ rows: [{ ...row, unit_code: 4, quantity: -3 }], mappings: [{ ...conversion, unit_code: 4, target_unit: 'kg' }] });
+assert.equal(weightResult[0].quantity, 0.15);
+assert.equal(weightResult[0].unit, 'kg');
+assert.throws(() => rchConsumption({ rows: [row], mappings: [{ ...conversion, grams_per_piece: null }] }), /Conversione/);
+console.log('PASS: exact unique matching, excluded unit changes, active ingredients, confirmed piece/weight conversions and historical snapshots.');
