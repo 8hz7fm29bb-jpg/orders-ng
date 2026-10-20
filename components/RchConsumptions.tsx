@@ -597,7 +597,9 @@ export function RchConsumptions({
                   </tr>
                 </thead>
                 <tbody>
-                  {detail.rows.map((r) => {
+                  {[...detail.rows].sort((a, b) =>
+                    a.name.trim().localeCompare(b.name.trim(), "it", { sensitivity: "base", numeric: true })
+                  ).map((r) => {
                     const m = detail.mappings.find(
                       (m) => m.rch_id === r.rch_id,
                     );
