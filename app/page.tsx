@@ -105,7 +105,7 @@ function Conversion({events}: {events: EventRow[]}) {
   return <section className="panel">
     <span className="eyebrow">BANCHETTI</span>
     <div className="panelHead" style={{marginTop: 12, alignItems: "baseline", gap: 12}}><h3>Tasso di conversione</h3><strong style={{whiteSpace: "nowrap"}}>{rate}</strong></div>
-    <p>{confirmed} confermati su {total} banchetti preventivati</p>
+    <p>{confirmed} confermati su {total} preventivati</p>
     <dl className="flow">
       <div className="flowRow"><dd>{confirmed}</dd><dt>Confermati</dt></div>
       <div className="flowRow"><dd>{waiting}</dd><dt>In attesa di conferma</dt></div>
