@@ -14,7 +14,6 @@ import {
   type RchMapping,
   type RchImport,
 } from "@/lib/rch";
-import catalog from "@/lib/rch-catalog.json";
 type Ingredient = {
   id: string;
   name: string;
@@ -136,24 +135,6 @@ export function RchConsumptions({
       if (r.error) throw new Error(r.error.message);
       setMappings((old) =>
         old.map((x) => (x.rch_id === m.rch_id ? r.data : x)),
-      );
-    });
-  }
-  async function seed() {
-    await run(async () => {
-      const r = await supabase!.from("rch_mappings").upsert(
-        catalog.map((r) => ({
-          ...r,
-          ingredient_id: exactRchMatch(r, ingredients),
-          excluded: /^vin[oi]\b/i.test(r.name),
-        })),
-        { onConflict: "rch_id", ignoreDuplicates: true },
-      );
-      if (r.error) throw new Error(r.error.message);
-      await refresh();
-      setTab("associations");
-      setMessage(
-        "Modello caricato senza quantità. Associa gli ingredienti e contrassegna i vini come esclusi.",
       );
     });
   }
@@ -395,9 +376,6 @@ export function RchConsumptions({
           {busy && <p role="status">Operazione in corso…</p>}
           {unresolved.length > 0 && <p className="rchHint">{unresolved.length} ingredienti da verificare prima del salvataggio.</p>}
           <div className="formActions">
-            <button className="secondary" disabled={busy || readOnly} onClick={seed}>
-              Carica modello iniziale senza quantità
-            </button>
             <button
               className="primary"
               disabled={
