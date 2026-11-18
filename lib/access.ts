@@ -1,7 +1,7 @@
 export const ACCESS_SECTIONS = [
  {id:'dashboard',label:'Dashboard'},{id:'events',label:'Eventi'},{id:'clients',label:'Clienti'},
  {id:'recipes',label:'Ricettario'},{id:'ingredients',label:'Ingredienti'},
- {id:'rch',label:'Consumi RCH'},{id:'associations',label:'Associazioni'},{id:'reports',label:'Report'},
+ {id:'rch',label:'Consumi à la carte'},{id:'associations',label:'Associazioni RCH → Orders'},{id:'reports',label:'Report'},
 ] as const
 export type Permissions = Partial<Record<typeof ACCESS_SECTIONS[number]['id'],'read'|'write'>>
 export type OrdersAccess = {owner:boolean;active:boolean;permissions:Permissions}

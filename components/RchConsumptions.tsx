@@ -320,6 +320,7 @@ export function RchConsumptions({
           {[
             ...(!readOnly ? [["import", "Importa file"]] : []),
             ["archive", "Archivio"],
+            ...(onAssociations ? [["associations", "Associazioni RCH → Orders"]] : []),
           ].map(([id, label]) => (
             <button
               key={id}
